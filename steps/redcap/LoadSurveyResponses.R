@@ -18,6 +18,7 @@ LoadSurveyResponses <- R6::R6Class(
       )
     },
 
+    #' load responses from a questionnaire
     get_responses = function(name) {
       self$logger$info("loading responses project=%s", name)
 
@@ -42,10 +43,6 @@ LoadSurveyResponses <- R6::R6Class(
     }
   ),
 
-  # project = private$.project,
-  # parse_factors = private$.parse_factors,
-  # parse_survey_fields = private$.parse_survey_fields
-
   public = list(
     initialize = function(
       pipeline,
@@ -60,7 +57,6 @@ LoadSurveyResponses <- R6::R6Class(
       super$initialize(pipeline, ...)
     },
 
-    #' load responses from the questionnaire
     transform = function(...) {
       private$get_responses(private$.project)
     }
