@@ -19,7 +19,7 @@ LoadSurveyResponses <- R6::R6Class(
     },
 
     #' load responses from a questionnaire
-    get_responses = function(name) {
+    get_responses = function(name, ...) {
       self$logger$info("loading responses project=%s", name)
 
       project <- private$redcap(name)
@@ -31,13 +31,7 @@ LoadSurveyResponses <- R6::R6Class(
         pluck("forms")
 
       responses <- project %>%
-        rename_all(~ str_replace(., paste0(forms[1], "_"), "")) %>%
-        private$apply_nested_steps() %>%
-        collect()
-
-      self$logger$info(
-        "retrieved %d responses project=%s", nrow(responses), name
-      )
+        rename_all(~ str_replace(., paste0(forms[1], "_"), ""))
 
       return(responses)
     }

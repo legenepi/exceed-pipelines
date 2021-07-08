@@ -5,8 +5,11 @@ LoadCovidResponses <- R6::R6Class(
   inherit = LoadSurveyResponses,
 
   public = list(
-    initialize = function(pipeline, ...) {
-      super$initialize(pipeline, project="covid", ...)
+    initialize = function(pipeline, version = NULL, ...) {
+      project <- "covid"
+      if (!is.null(version))
+        project <- paste(project, version, sep = "-")
+      super$initialize(pipeline, project = project, ...)
     }
   )
 )

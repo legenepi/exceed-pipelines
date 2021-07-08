@@ -5,18 +5,25 @@ LoadBaselineResponses <- R6::R6Class(
   "LoadBaselineResponses",
   inherit = LoadSurveyResponses,
 
-  public = list(
-    initialize = function(pipeline, ...) {
-      super$initialize(pipeline, ...)
-      self$add_step(RenameStep, exceed_id = exceed_study_id)
-    },
+  private = list(
+    get_responses = function(name, .exec) {
+      responses <- super$get_responses(name) %>%
+        rename(exceed_id = exceed_study_id) %>%
+        private$apply_steps(.exec) %>%
+        .exec()
 
-    #' transform method - loads and combines all baseline survey responses
-    transform = function(...) {
+      self$logger$info("received %d responses from %s", nrow(responses), name)
+
+      return(responses)
+    }
+  ),
+
+  public = list(
+    transform = function(.data, .exec, ...) {
       private$redcap() %>%
         src_tbls() %>%
         str_subset("^scq") %>%
-        map_dfr(private$get_responses)
+        map_dfr(private$get_responses, .exec=.exec, ...)
     }
   )
 )
