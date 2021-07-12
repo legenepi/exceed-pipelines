@@ -2,7 +2,7 @@
 
 LoadMotorTrendCars <- R6::R6Class(
   "LoadMotorTrendCars",
-  inherit = DefaultDataset,
+  inherit = LoadDefaultDataset,
 
   public = list(
     initialize = function(pipeline, ...) {

@@ -1,5 +1,5 @@
-DefaultDataset <- R6::R6Class(
-  "DefaultDataset",
+LoadDefaultDataset <- R6::R6Class(
+  "LoadDefaultDataset",
   inherit = Step,
 
   private = list(

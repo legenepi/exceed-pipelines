@@ -2,7 +2,7 @@
 
 LoadFaithful <- R6::R6Class(
   "LoadFaithful",
-  inherit = DefaultDataset,
+  inherit = LoadDefaultDataset,
 
   public = list(
     initialize = function(pipeline, ...) {

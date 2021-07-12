@@ -2,7 +2,7 @@
 
 LoadIris <- R6::R6Class(
   "LoadIris",
-  inherit = DefaultDataset,
+  inherit = LoadDefaultDataset,
 
   public = list(
     initialize = function(pipeline, ...) {
