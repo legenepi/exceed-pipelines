@@ -8,7 +8,7 @@ LoadBaselineResponses <- R6::R6Class(
   private = list(
     get_responses = function(name, .exec) {
       responses <- super$get_responses(name) %>%
-        rename(exceed_id = exceed_study_id) %>%
+        dplyr::rename(exceed_id = exceed_study_id) %>%
         private$apply_steps(.exec) %>%
         .exec()
 
@@ -22,8 +22,8 @@ LoadBaselineResponses <- R6::R6Class(
     transform = function(.data, .exec, ...) {
       private$redcap() %>%
         src_tbls() %>%
-        str_subset("^scq") %>%
-        map_dfr(private$get_responses, .exec=.exec, ...)
+        stringr::str_subset("^scq") %>%
+        purrr::map_dfr(private$get_responses, .exec=.exec, ...)
     }
   )
 )

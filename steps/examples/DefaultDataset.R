@@ -1,0 +1,20 @@
+DefaultDataset <- R6::R6Class(
+  "DefaultDataset",
+  inherit = Step,
+
+  private = list(
+    .dataset = NULL
+  ),
+
+  public = list(
+    initialize = function(pipeline, dataset, ...) {
+      super$initialize(pipeline, ...)
+      private$.dataset <- dataset
+    },
+
+    transform = function(...) {
+      dplyr::as_tibble(private$.dataset)
+    }
+  )
+)
+

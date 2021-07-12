@@ -27,11 +27,11 @@ LoadSurveyResponses <- R6::R6Class(
       # extract the name of survey instrument
       forms <- project %>%
         metadata() %>%
-        pluck("info") %>%
-        pluck("forms")
+        purrr::pluck("info") %>%
+        purrr::pluck("forms")
 
       responses <- project %>%
-        rename_all(~ str_replace(., paste0(forms[1], "_"), ""))
+        dplyr::rename_all(~ stringr::str_replace(., paste0(forms[1], "_"), ""))
 
       return(responses)
     }
