@@ -73,7 +73,7 @@ LoadSurveyMetadata <- R6::R6Class(
       metadata <- metadata %>%
         mutate(
           field_name = str_to_upper(field_name),
-          field_name = str_replace(field_name, regex("_*exceed_*", ignore_case = TRUE), "_"),
+          field_name = str_replace(field_name, regex("_*exceed", ignore_case = TRUE), "_X"),
           field_name = str_replace(field_name, "_*$", ""),
           field_value = case_when(
             field_type == "checkbox" ~ 1,

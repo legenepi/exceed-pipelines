@@ -6,6 +6,7 @@ GenericExport <- R6::R6Class(
   private = list(
     .encrypt = FALSE,
     .password = NULL,
+    .manifest = "manifest.txt",
     .output_dir = NULL,
     .output_file = NULL,
     .summary = tibble::tibble(
@@ -42,13 +43,15 @@ GenericExport <- R6::R6Class(
       system(command)
     },
 
-    generate_checksums = function(name, file) {
-      digest_algos <- c("md5", "sha256")
-      digest_algos %>%
-        purrr::walk(function(algo) {
-          checksum <- digest::digest(file, algo = algo, file = TRUE)
-          self$summary_append(glue::glue("{name}-{algo}"), checksum)
+    generate_checksums = function(file) {
+      digest_algos <- list("md5", "sha256")
+      checksums <- digest_algos %>%
+        set_names() %>%
+        map(function(algo) {
+          digest::digest(file, algo = algo, file = TRUE)
         })
+
+      return(c(filename = basename(file), checksums))
     }
   ),
 
@@ -68,12 +71,12 @@ GenericExport <- R6::R6Class(
       private$.output_dir <- here::here(
         fs::path_dir(private$get_source_path()), "output", private$.timestamp
       )
-      self$summary_append("output-dir", private$.output_dir)
+      self$summary_append("output_dir", private$.output_dir)
 
       private$.output_file <- self$make_filename(
         prefix = "exceed",
         suffix = suffix,
-        attribute = "output-file"
+        attribute = "output_file"
       )
     },
 
@@ -105,7 +108,14 @@ GenericExport <- R6::R6Class(
       if (fs::file_exists(archive))
         fs::file_delete(archive)
 
-      filenames <- as.vector(unlist(files))
+      checksums <- purrr::map(files, private$generate_checksums)
+      checksums %>%
+        yaml::write_yaml(private$.manifest)
+
+      filenames <- files %>%
+        unlist() %>%
+        as.vector() %>%
+        append(private$.manifest)
 
       if (private$.encrypt) {
         private$create_archive_encrypted(archive, filenames, private$.password)
@@ -113,8 +123,9 @@ GenericExport <- R6::R6Class(
         utils::zip(archive, filenames, flags = "--junk-paths")
       }
 
-      # files <- c(output = archive, files)
-      purrr::walk2(names(files), files, private$generate_checksums)
+      checksums <- private$generate_checksums(archive)
+      self$summary_append(attribute = "output_md5", value = checksums$md5)
+      self$summary_append(attribute = "output_sha256", value = checksums$sha256)
     },
 
     summary_append = function(attribute, value) {

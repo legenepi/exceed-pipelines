@@ -38,7 +38,7 @@ PrepareBreatheExport <- R6::R6Class(
       filename <- self$make_filename(
         prefix = "exceed_metadata",
         suffix = "csv",
-        attribute = "metadata-file"
+        attribute = "metadata_file"
       )
 
       list(metadata = metadata, fields = fields, filename = filename)
@@ -71,11 +71,11 @@ PrepareBreatheExport <- R6::R6Class(
         add_step(MergeIdentities, domain = private$.domain, drop_na = FALSE) %>%
         rename(study_id = domain_id) %>%
         collect() %>%
-        select(-exceed_id, -timestamp, -complete)
+        select(-exceed_id, -timestamp, -complete) %>%
         rename_with(function(col) {
           col <- paste(name, col, sep = "_")
           col %>%
-            str_replace(regex("_*exceed_*", ignore_case = TRUE), "_") %>%
+            str_replace(regex("_*exceed", ignore_case = TRUE), "_x") %>%
             str_replace("_*$", "")
         }, !matches("^study_id$"))
     },
@@ -100,9 +100,8 @@ PrepareBreatheExport <- R6::R6Class(
           left_join(responses, by = "study_id")
       }
 
-      # data <- data %>%
-      #   rename_all(str_to_upper)
-      #
+      data <- data %>%
+        rename_all(str_to_upper)
 
       self$summary_append(
         "data",
@@ -112,7 +111,7 @@ PrepareBreatheExport <- R6::R6Class(
       filename <- self$make_filename(
         prefix = "exceed_data",
         suffix = "csv",
-        attribute = "data-file"
+        attribute = "data_file"
       )
 
       list(data = data, filename = filename)
