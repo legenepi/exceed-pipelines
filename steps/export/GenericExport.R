@@ -6,7 +6,7 @@ GenericExport <- R6::R6Class(
   private = list(
     .encrypt = FALSE,
     .password = NULL,
-    .manifest = "manifest.txt",
+    .manifest = NULL,
     .output_dir = NULL,
     .output_file = NULL,
     .summary = tibble::tibble(
@@ -77,6 +77,12 @@ GenericExport <- R6::R6Class(
         prefix = "exceed",
         suffix = suffix,
         attribute = "output_file"
+      )
+
+      private$.manifest <- self$make_filename(
+        prefix = "exceed_manifest",
+        suffix = "txt",
+        attribute = "manifest"
       )
     },
 

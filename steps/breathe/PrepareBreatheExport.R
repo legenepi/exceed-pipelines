@@ -5,7 +5,7 @@ PrepareBreatheExport <- R6::R6Class(
 
   private = list(
     .config = NULL,
-    .domain = "thriva",
+    .domain = "breathe",
 
     get_identities = function() {
       self$client$identity(domain = "*") %>%
