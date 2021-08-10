@@ -41,6 +41,7 @@ GenericExport <- R6::R6Class(
         files = paste(files, collapse = " ")
       )
       system(command)
+      system(glue::glue("7z l -p{password} {archive}"))
     },
 
     generate_checksums = function(file) {
@@ -127,6 +128,8 @@ GenericExport <- R6::R6Class(
         private$create_archive_encrypted(archive, filenames, private$.password)
       } else {
         utils::zip(archive, filenames, flags = "--junk-paths")
+        utils::unzip(archive, list = TRUE) %>%
+          print()
       }
 
       checksums <- private$generate_checksums(archive)
