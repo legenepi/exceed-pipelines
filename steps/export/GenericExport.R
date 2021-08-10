@@ -51,7 +51,7 @@ GenericExport <- R6::R6Class(
           digest::digest(file, algo = algo, file = TRUE)
         })
 
-      return(c(filename = basename(file), checksums))
+      return(c(filename = fs::path_file(file), checksums))
     }
   ),
 

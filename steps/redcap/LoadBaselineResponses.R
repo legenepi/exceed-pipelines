@@ -20,10 +20,19 @@ LoadBaselineResponses <- R6::R6Class(
 
   public = list(
     transform = function(.data, .exec, ...) {
-      private$redcap() %>%
+      tables <- private$redcap() %>%
         src_tbls() %>%
-        stringr::str_subset("^scq") %>%
-        purrr::map_dfr(private$get_responses, .exec=.exec, ...)
+        stringr::str_subset("^scq")
+
+      pb <- progress::progress_bar$new(total = length(tables))
+      pb$tick(0)
+      tables %>%
+        purrr::map_dfr(function(name) {
+          pb$message(glue::glue("- baseline responses: {name}"))
+          responses <- private$get_responses(name, .exec=.exec, ...)
+          pb$tick()
+          return(responses)
+        })
     }
   )
 )

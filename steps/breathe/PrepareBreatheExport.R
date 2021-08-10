@@ -15,7 +15,17 @@ PrepareBreatheExport <- R6::R6Class(
     },
 
     prepare_metadata = function() {
-      metadata <- map_dfr(private$.config$redcap$surveys, private$get_metadata)
+      pb <- progress::progress_bar$new(
+        total = length(private$.config$redcap$surveys)
+      )
+      pb$tick(0)
+      metadata <- private$.config$redcap$surveys %>%
+        map_dfr(function(survey) {
+          pb$message(glue::glue("survey metadata: {name}", name = survey$name))
+          survey_metadata <- private$get_metadata(survey)
+          pb$tick()
+          return(survey_metadata)
+        })
 
       fields <- metadata %>%
         select(survey, field_basename)
@@ -26,9 +36,19 @@ PrepareBreatheExport <- R6::R6Class(
           description = field_label,
           value = field_value,
           label = field_value_label
-        ) %>%
-        rename_all(str_to_upper)
+        )
 
+      purrr::walk(private$.config$metadata$vars, function(v) {
+        metadata <- metadata %>%
+          add_row(
+            variable = v$name,
+            description = v$description,
+            .before = v$position
+          )
+      })
+
+      metadata <- metadata %>%
+        rename_all(str_to_upper)
 
       self$summary_append(
         "metadata",
@@ -45,7 +65,7 @@ PrepareBreatheExport <- R6::R6Class(
     },
 
     get_metadata = function(survey) {
-      pipeline <- self$client$pipeline() %>%
+      self$client$pipeline() %>%
         add_step(
           LoadSurveyMetadata,
           survey = survey$slug,
@@ -53,9 +73,7 @@ PrepareBreatheExport <- R6::R6Class(
           fields = survey$vars,
           field_exclude = survey$exclude,
           field_include = survey$include
-        )
-
-      pipeline %>%
+        ) %>%
         collect() %>%
         mutate(
           field_name = paste(survey$prefix, field_name, sep = "_"),
@@ -65,7 +83,7 @@ PrepareBreatheExport <- R6::R6Class(
 
     get_survey_responses = function(name, step, fields) {
       self$client$pipeline() %>%
-        add_step(!!step) %>%
+        add_step(!!step, parse_factors = FALSE, parse_survey_fields = TRUE) %>%
         select(exceed_id, timestamp, complete, fields) %>%
         filter(complete == 2) %>%
         add_step(MergeIdentities, domain = private$.domain, drop_na = FALSE) %>%
@@ -90,7 +108,14 @@ PrepareBreatheExport <- R6::R6Class(
     prepare_data = function(metadata) {
       data <- private$get_identities()
 
+      pb <- progress::progress_bar$new(
+        total = length(private$.config$redcap$surveys)
+      )
+
+      pb$tick(0)
       for (survey in private$.config$redcap$surveys) {
+        pb$message(glue::glue("survey responses: {name}", name = survey$name))
+
         responses <- private$get_survey_responses(
           survey$name,
           survey$step,
@@ -98,6 +123,8 @@ PrepareBreatheExport <- R6::R6Class(
         )
         data <- data %>%
           left_join(responses, by = "study_id")
+
+        pb$tick()
       }
 
       data <- data %>%
@@ -137,7 +164,7 @@ PrepareBreatheExport <- R6::R6Class(
         files = list(metadata = metadata$filename, data = data$filename)
       )
 
-      arrange(private$.summary, attribute)
+      return(private$.summary)
     }
   )
 )
