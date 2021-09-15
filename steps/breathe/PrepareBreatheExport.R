@@ -5,7 +5,7 @@ PrepareBreatheExport <- R6::R6Class(
 
   private = list(
     .config = NULL,
-    .domain = "breathe",
+    .domain = "thriva",
 
     get_identities = function() {
       self$client$identity(domain = "*") %>%
@@ -18,7 +18,6 @@ PrepareBreatheExport <- R6::R6Class(
       pb <- progress::progress_bar$new(
         total = length(private$.config$redcap$surveys)
       )
-      pb$tick(0)
       metadata <- private$.config$redcap$surveys %>%
         map_dfr(function(survey) {
           pb$message(glue::glue("survey metadata: {name}", name = survey$name))
@@ -58,7 +57,7 @@ PrepareBreatheExport <- R6::R6Class(
       filename <- self$make_filename(
         prefix = "exceed_metadata",
         suffix = "csv",
-        attribute = "metadata_file"
+        key = "metadata_file"
       )
 
       list(metadata = metadata, fields = fields, filename = filename)
@@ -112,7 +111,6 @@ PrepareBreatheExport <- R6::R6Class(
         total = length(private$.config$redcap$surveys)
       )
 
-      pb$tick(0)
       for (survey in private$.config$redcap$surveys) {
         pb$message(glue::glue("survey responses: {name}", name = survey$name))
 
@@ -127,6 +125,11 @@ PrepareBreatheExport <- R6::R6Class(
         pb$tick()
       }
 
+      sample_size <- 10
+      data <- data %>%
+        sample_n(sample_size) %>%
+        mutate(study_id = sample(seq(270000000, 279999999), sample_size))
+
       data <- data %>%
         rename_all(str_to_upper)
 
@@ -138,7 +141,7 @@ PrepareBreatheExport <- R6::R6Class(
       filename <- self$make_filename(
         prefix = "exceed_data",
         suffix = "csv",
-        attribute = "data_file"
+        key = "data_file"
       )
 
       list(data = data, filename = filename)

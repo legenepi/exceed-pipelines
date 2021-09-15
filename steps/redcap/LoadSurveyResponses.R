@@ -6,23 +6,22 @@ LoadSurveyResponses <- R6::R6Class(
 
   private = list(
     .project = NULL,
-    .parse_factors = TRUE,
-    .parse_survey_fields = TRUE,
 
     # create redcap object
     redcap = function(project = NULL) {
       self$client$redcap(
         project = project,
-        parse_factors = private$.parse_factors,
-        parse_survey_fields = private$.parse_survey_fields
+        snapshot = self$snapshot,
+        parse_factors = self$args$parse_factors,
+        parse_survey_fields = self$args$parse_survey_fields
       )
     },
 
     #' load responses from a questionnaire
-    get_responses = function(name, ...) {
-      self$logger$info("loading responses project=%s", name)
+    get_responses = function(project) {
+      self$logger$info("loading responses project=%s", project)
 
-      project <- private$redcap(name)
+      project <- private$redcap(project)
 
       # extract the name of survey instrument
       forms <- project %>%
@@ -37,22 +36,23 @@ LoadSurveyResponses <- R6::R6Class(
     }
   ),
 
+  active = list(
+    project = function() { private$.project }
+  ),
+
   public = list(
-    initialize = function(
-      pipeline,
-      project = NULL,
-      parse_factors = TRUE,
-      parse_survey_fields = TRUE,
-      ...
-    ) {
+    initialize = function(pipeline, project = NULL, parse_factors = TRUE, parse_survey_fields = TRUE, ...) {
+      super$initialize(
+        pipeline,
+        parse_factors = !!parse_factors,
+        parse_survey_fields = !!parse_survey_fields,
+        ...
+      )
       private$.project <- project
-      private$.parse_factors <- parse_factors
-      private$.parse_survey_fields <- parse_survey_fields
-      super$initialize(pipeline, ...)
     },
 
     transform = function(...) {
-      private$get_responses(private$.project)
+      private$get_responses(project = private$.project)
     }
   )
 )

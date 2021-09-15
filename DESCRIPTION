@@ -1,6 +1,13 @@
-Package: exceed-pipelines
+Package: exceed.pipelines
 Version: 0.1.0
 RoxygenNote: 7.1.1
-
-
-
+Encoding: UTF-8
+Description: EXCEED API pipelines
+License: MIT + file LICENSE
+Authors@R: 
+    person(given = "Altaf",
+           family = "Ali",
+           role = c("aut", "cre"),
+           email = "altaf.ali@leicester.ac.uk")
+Imports: 
+    exceedapi

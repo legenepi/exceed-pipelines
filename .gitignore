@@ -51,3 +51,6 @@ vignettes/*.pdf
 *.xlsx
 
 docs
+R
+man
+NAMESPACE

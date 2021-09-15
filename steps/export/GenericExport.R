@@ -4,13 +4,14 @@ GenericExport <- R6::R6Class(
   inherit = Step,
 
   private = list(
+    .config = NULL,
     .encrypt = FALSE,
     .password = NULL,
     .manifest = NULL,
     .output_dir = NULL,
     .output_file = NULL,
     .summary = tibble::tibble(
-      attribute = character(),
+      key = character(),
       value = character()
     ),
     .timestamp = format(Sys.time(), "%Y_%m_%d"),
@@ -35,7 +36,7 @@ GenericExport <- R6::R6Class(
       return(password)
     },
 
-    create_archive_encrypted = function(archive, files, password) {
+    create_encrypted_archive = function(archive, files, password) {
       command <- glue::glue(
         "7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=32m -ms=on -mhe=on -p{password} {archive} {files}",
         files = paste(files, collapse = " ")
@@ -56,11 +57,17 @@ GenericExport <- R6::R6Class(
     }
   ),
 
+  active = list(
+    config = function() { private$.config },
+    summary = function() { private$.summary }
+  ),
+
   public = list(
     initialize = function(pipeline, encrypt = FALSE, ...) {
       super$initialize(pipeline, ...)
 
       private$.encrypt <- encrypt
+      self$summary_append("timestamp", private$.timestamp)
       self$summary_append("encrypt", private$.encrypt)
 
       suffix <- "zip"
@@ -77,17 +84,21 @@ GenericExport <- R6::R6Class(
       private$.output_file <- self$make_filename(
         prefix = "exceed",
         suffix = suffix,
-        attribute = "output_file"
+        key = "output_file"
       )
 
       private$.manifest <- self$make_filename(
         prefix = "exceed_manifest",
         suffix = "txt",
-        attribute = "manifest"
+        key = "manifest"
       )
     },
 
-    make_filename = function(prefix, suffix, attribute) {
+    load_config = function(filename) {
+      private$.config <- yaml::yaml.load_file(filename)
+    },
+
+    make_filename = function(prefix, suffix, key) {
       filename <- fs::path(
         private$.output_dir,
         paste(
@@ -96,7 +107,7 @@ GenericExport <- R6::R6Class(
           sep = "."
         )
       )
-      self$summary_append(attribute = attribute, value = filename)
+      self$summary_append(key = key, value = filename)
       return(filename)
     },
 
@@ -125,7 +136,7 @@ GenericExport <- R6::R6Class(
         append(private$.manifest)
 
       if (private$.encrypt) {
-        private$create_archive_encrypted(archive, filenames, private$.password)
+        private$create_encrypted_archive(archive, filenames, private$.password)
       } else {
         utils::zip(archive, filenames, flags = "--junk-paths")
         utils::unzip(archive, list = TRUE) %>%
@@ -133,13 +144,13 @@ GenericExport <- R6::R6Class(
       }
 
       checksums <- private$generate_checksums(archive)
-      self$summary_append(attribute = "output_md5", value = checksums$md5)
-      self$summary_append(attribute = "output_sha256", value = checksums$sha256)
+      self$summary_append(key = "output_md5", value = checksums$md5)
+      self$summary_append(key = "output_sha256", value = checksums$sha256)
     },
 
-    summary_append = function(attribute, value) {
+    summary_append = function(key, value) {
       private$.summary <- private$.summary %>%
-        tibble::add_row(attribute = attribute, value = as.character(value))
+        tibble::add_row(key = key, value = as.character(value))
     }
   )
 )

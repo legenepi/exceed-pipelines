@@ -1,2 +1,3 @@
-# exceed-pipelines
+# exceed.pipelines
+
 EXCEED data processing pipelines
