@@ -1,13 +1,10 @@
 #' CalculateAge - a pipeline step to calculate the age based on either today's
 #' date or on a reference date from a variable
 CalculateAge <- R6::R6Class(
-  "CalculateAge", inherit = Step,
+  "CalculateAge",
+  inherit = Step,
 
   private = list(
-    calc_ageX = function(start_date, end_date) {
-      lubridate::as.period(end_date - start_date) / lubridate::years(1)
-    },
-
     as_date = function(x) {
       if (lubridate::is.Date(x))
         return(x)

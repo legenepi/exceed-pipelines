@@ -4,8 +4,6 @@ PrepareAntibodyTestReport <- R6::R6Class(
   inherit = GenericExport,
 
   private = list(
-    .config = NULL,
-
     resolve_duplicates = function(.x) {
       .x <- purrr::discard(.x, is.na)
       if (n_distinct(.x) == 1)
@@ -15,19 +13,40 @@ PrepareAntibodyTestReport <- R6::R6Class(
     },
 
     get_profiles = function() {
-      profiles <- self$client$profiles()
-      return(profiles)
+      cli::cli_h1("Profiles")
+
+      profiles <- self$client$pipeline() %>%
+        add_step(LoadProfiles) %>%
+        add_step(MergeUUIDs, domain = "exceed", by = "exceed_id") %>%
+        select(uuid, postcode = primaryaddress__address__postcode) %>%
+        collect()
+
+      profiles %>%
+        group_by(uuid) %>%
+        mutate(across(c(postcode), private$resolve_duplicates)) %>%
+        distinct(uuid, postcode)
+    },
+
+    lookup_postcodes = function(postcodes) {
+      cli::cli_h1("Postcodes")
+
+      self$client$pipeline() %>%
+        add_step(LookupPostcodes, postcodes = postcodes) %>%
+        select(postcode = query, postcode_outcode = result_outcode) %>%
+        collect()
     },
 
     calculate_age_group = function(age) {
       cut(
         age,
         breaks = c(-Inf, 35, 50, 70, Inf),
-        labels = c("18 - 34", "35 - 49", "50 - 69", "70+")
+        labels = c("18-34", "35-49", "50-69", "70+")
       )
     },
 
     get_baseline_responses = function() {
+      cli::cli_h1("Baseline responses")
+
       baseline <- self$client$pipeline() %>%
         add_step(LoadBaselineSurveyResponses) %>%
         select(exceed_id, timestamp, complete, dob = gen1, gender = gen2, gen5) %>%
@@ -39,25 +58,33 @@ PrepareAntibodyTestReport <- R6::R6Class(
         collect()
 
       baseline %>%
-        group_by(uuid) %>%
-        mutate(postcode = "ABC") %>%
         mutate(ageGroup = private$calculate_age_group(age)) %>%
+        group_by(uuid) %>%
         mutate(across(c(ageGroup, gender, ethnicity), private$resolve_duplicates)) %>%
-        distinct(uuid, ageGroup, gender, ethnicity, postcode)
+        distinct(uuid, ageGroup, gender, ethnicity)
     },
 
     get_results = function() {
-      profiles <- private$get_profiles()
-
-      baseline <- private$get_baseline_responses()
+      cli::cli_h1("Test results")
 
       results <- self$client$pipeline() %>%
         add_step(LoadAntibodyTestResults) %>%
         add_step(MergeUUIDs, domain = "thriva", by = "subjectId") %>%
         collect()
 
-      results %>%
+      profiles <- private$get_profiles()
+      baseline <- private$get_baseline_responses()
+
+      results <- results %>%
+        left_join(profiles, by = "uuid") %>%
         left_join(baseline, by = "uuid")
+
+      postcodes <- private$lookup_postcodes(results$postcode)
+
+      results %>%
+        left_join(postcodes, by = "postcode") %>%
+        select(-postcode) %>%
+        rename(postcode = postcode_outcode)
     },
 
     prepare_data = function() {
@@ -87,8 +114,9 @@ PrepareAntibodyTestReport <- R6::R6Class(
           resultValueUnitOfMeasureCOVS,
           testResultCOVS
         )
-      return(results)
-      self$write_csv(filename)
+
+      results %>%
+        self$write_csv(filename)
 
       return(self$summary)
     }

@@ -5,12 +5,6 @@ LoadSurveyMetadata <- R6::R6Class(
   inherit = Step,
 
   private = list(
-    .survey = NULL,
-    .fields = NULL,
-    .field_types = NULL,
-    .field_exclude = NULL,
-    .field_include = NULL,
-
     #' strip html tags
     strip_tags = function(x) {
       x %>%
@@ -18,32 +12,47 @@ LoadSurveyMetadata <- R6::R6Class(
         str_squish()
     },
 
-    #' get metadata from a questionnaire
-    get_metadata = function(...) {
-      self$logger$info("loading metadata survey=%s", private$.survey)
+    #' get field names
+    get_fields = function(exclude = FALSE) {
+      map(self$args$fields, ~ {
+        field_exclude <- .x$exclude
+        if (is.null(field_exclude))
+            field_exclude <- FALSE
+        if (field_exclude == exclude)
+          .x$name
+      }) %>%
+        unlist()
+    },
 
-      metadata <- self$client$redcap(project = private$.survey) %>%
+    #' get metadata from a questionnaire
+    get_metadata = function() {
+      self$logger$info("loading metadata survey=%s", self$args$slug)
+
+      metadata <- self$client$redcap(project = self$args$slug) %>%
         metadata() %>%
         collect()
 
-      if (!is.null(private$.field_types)) {
-        if (!is.null(private$.field_include)) {
+      fields_include <- private$get_fields(exclude = FALSE)
+      fields_exclude <- private$get_fields(exclude = TRUE)
+
+      if (!is.null(self$args$field_types)) {
+        if (!is.null(fields_include)) {
           metadata <- metadata %>%
             filter(
-              field_type %in% private$.field_types |
-              str_detect(field_name, paste(private$.field_include, collapse = "|"))
+              field_type %in% self$args$field_types |
+              str_detect(field_name, paste(fields_include, collapse = "|"))
             )
         } else {
           metadata <- metadata %>%
-            filter(field_type %in% private$.field_types)
+            filter(field_type %in% self$args$field_types)
         }
       }
 
-      if (!is.null(private$.field_exclude)) {
+      if (!is.null(fields_exclude)) {
         metadata <- metadata %>%
           filter(
-            !str_detect(
-              field_name, paste(private$.field_exclude, collapse = "|")
+            str_detect(
+              field_name, paste(fields_exclude, collapse = "|"), negate = TRUE
             )
           )
       }
@@ -61,20 +70,23 @@ LoadSurveyMetadata <- R6::R6Class(
           field_basename = field_name
         )
 
-      if (!is.null(private$.fields)) {
-        metadata <- map2_df(
-          names(private$.fields),
-          private$.fields,
-          private$map_fields,
-          metadata
-        )
-      }
+      # TODO: is this even necessary anymore?
+
+      # if (!is.null(self$args$fields)) {
+      #   metadata <- map2_df(
+      #     names(self$args$fields),
+      #     self$args$fields,
+      #     private$map_fields,
+      #     metadata
+      #   )
+      # }
+      #
 
       metadata <- metadata %>%
         mutate(
-          field_name = str_to_upper(field_name),
-          field_name = str_replace(field_name, regex("_*exceed", ignore_case = TRUE), "_X"),
-          field_name = str_replace(field_name, "_*$", ""),
+          # field_name = str_to_upper(field_name),
+          # field_name = str_replace(field_name, regex("_*exceed", ignore_case = TRUE), "_X"),
+          # field_name = str_replace(field_name, "_*$", ""),
           field_value = case_when(
             field_type == "checkbox" ~ 1,
             TRUE ~ field_value
@@ -83,6 +95,7 @@ LoadSurveyMetadata <- R6::R6Class(
         select(
           field_name,
           field_basename,
+          field_type,
           field_label,
           field_value,
           field_value_label
@@ -112,25 +125,8 @@ LoadSurveyMetadata <- R6::R6Class(
   ),
 
   public = list(
-    initialize = function(
-      pipeline,
-      survey = NULL,
-      fields = NULL,
-      field_types = NULL,
-      field_exclude = NULL,
-      field_include = NULL,
-      ...
-    ) {
-      private$.survey <- survey
-      private$.fields <- fields
-      private$.field_types <- field_types
-      private$.field_exclude <- field_exclude
-      private$.field_include <- field_include
-      super$initialize(pipeline, ...)
-    },
-
     transform = function(...) {
-      private$get_metadata(...)
+      private$get_metadata()
     }
   )
 )

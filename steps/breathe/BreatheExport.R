@@ -1,6 +1,6 @@
-#' PrepareBreatheExport - pipeline step for preparing BREATHE export.
-PrepareBreatheExport <- R6::R6Class(
-  "PrepareBreatheExport",
+#' BreatheExport - pipeline step for preparing BREATHE export.
+BreatheExport <- R6::R6Class(
+  "BreatheExport",
   inherit = GenericExport,
 
   private = list(
@@ -70,8 +70,8 @@ PrepareBreatheExport <- R6::R6Class(
           survey = survey$slug,
           field_types = private$.config$redcap$vars$types,
           fields = survey$vars,
-          field_exclude = survey$exclude,
-          field_include = survey$include
+          fields_exclude = survey$exclude,
+          fields_include = survey$include
         ) %>%
         collect() %>%
         mutate(
@@ -104,7 +104,7 @@ PrepareBreatheExport <- R6::R6Class(
         pull()
     },
 
-    prepare_data = function(metadata) {
+    prepare_data_old = function(metadata) {
       data <- private$get_identities()
 
       pb <- progress::progress_bar$new(
@@ -145,14 +145,47 @@ PrepareBreatheExport <- R6::R6Class(
       )
 
       list(data = data, filename = filename)
+    },
+
+    prepare_export = function() {
+      identities <- self$client$pipeline() %>%
+        add_step(LoadIdentities, domain = "breathe") %>%
+        select(uuid, STUDY_ID = pid) %>%
+        collect()
+
+      exclusions <- self$client$pipeline() %>%
+        add_step(LoadProfiles) %>%
+        add_step(MergeUUIDs, domain = "exceed", by = "exceed_id") %>%
+        select(uuid, deceased, scope = basicconsent__withdrawals__scope) %>%
+        collect() %>%
+        filter(scope >= 2 | deceased == TRUE) %>%
+        left_join(identities, by = "uuid")
+
+      identities <- identities %>%
+        anti_join(exclusions, by = "uuid")
+
+      self$config$tables %>%
+        discard(~ .$skip) %>%
+        map_dfr(~ {
+          cli::cli_h2("Table: {.x$name}")
+          .x$args$name <- .x$name
+          self$client$pipeline() %>%
+            add_step(
+              !!.x$step,
+              parent = self,
+              identities = identities,
+              !!!.x$args
+            ) %>%
+            collect()
+        })
     }
   ),
 
   public = list(
     transform = function(...) {
-      private$.config <- yaml::yaml.load_file(
-        here::here("projects/breathe/config.yaml")
-      )
+      self$load_config(here::here("projects/breathe/config.yaml"))
+
+      return(private$prepare_export())
 
       metadata <- private$prepare_metadata()
       metadata$metadata %>%

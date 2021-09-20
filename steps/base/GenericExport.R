@@ -7,13 +7,10 @@ GenericExport <- R6::R6Class(
     .config = NULL,
     .encrypt = FALSE,
     .password = NULL,
+    .archive = NULL,
+    .files = NULL,
     .manifest = NULL,
     .output_dir = NULL,
-    .output_file = NULL,
-    .summary = tibble::tibble(
-      key = character(),
-      value = character()
-    ),
     .timestamp = format(Sys.time(), "%Y_%m_%d"),
 
     get_source_path = function() {
@@ -31,9 +28,7 @@ GenericExport <- R6::R6Class(
     },
 
     generate_password = function(length = 32) {
-      password <- paste(sample(c(0:9, letters, LETTERS), length), collapse="")
-      self$summary_append("password", password)
-      return(password)
+      paste(sample(c(0:9, letters, LETTERS), length), collapse="")
     },
 
     create_encrypted_archive = function(archive, files, password) {
@@ -49,29 +44,28 @@ GenericExport <- R6::R6Class(
       digest_algos <- list("md5", "sha256")
       checksums <- digest_algos %>%
         set_names() %>%
-        map(function(algo) {
-          digest::digest(file, algo = algo, file = TRUE)
-        })
+        map(~ digest::digest(file, algo = .x, file = TRUE))
 
       return(c(filename = fs::path_file(file), checksums))
     }
   ),
 
   active = list(
+    archive = function() { private$.archive },
     config = function() { private$.config },
-    summary = function() { private$.summary }
+    files = function() { private$.files },
+    manifest = function() { private$.manifest },
+    output_dir = function() { private$.output_dir },
+    password = function() { private$.password },
+    timestamp = function() { private$.timestamp }
   ),
 
   public = list(
-    initialize = function(pipeline, encrypt = FALSE, ...) {
+    initialize = function(pipeline, ...) {
       super$initialize(pipeline, ...)
 
-      private$.encrypt <- encrypt
-      self$summary_append("timestamp", private$.timestamp)
-      self$summary_append("encrypt", private$.encrypt)
-
       suffix <- "zip"
-      if (encrypt) {
+      if (self$args$encrypt) {
         suffix <- "7z"
         private$.password <- private$generate_password()
       }
@@ -79,18 +73,15 @@ GenericExport <- R6::R6Class(
       private$.output_dir <- here::here(
         fs::path_dir(private$get_source_path()), "output", private$.timestamp
       )
-      self$summary_append("output_dir", private$.output_dir)
 
-      private$.output_file <- self$make_filename(
+      private$.archive <- self$make_filename(
         prefix = "exceed",
-        suffix = suffix,
-        key = "output_file"
+        suffix = suffix
       )
 
       private$.manifest <- self$make_filename(
         prefix = "exceed_manifest",
-        suffix = "txt",
-        key = "manifest"
+        suffix = "txt"
       )
     },
 
@@ -98,20 +89,23 @@ GenericExport <- R6::R6Class(
       private$.config <- yaml::yaml.load_file(filename)
     },
 
-    make_filename = function(prefix, suffix, key) {
+    make_filename = function(prefix, suffix) {
       filename <- fs::path(
-        private$.output_dir,
+        self$output_dir,
         paste(
-          paste(prefix, private$.timestamp, sep = "_"),
+          paste("exceed", prefix, self$timestamp, sep = "_"),
           suffix,
           sep = "."
         )
       )
-      self$summary_append(key = key, value = filename)
-      return(filename)
+      fs::path_norm(filename)
     },
 
     write_csv = function(x, file, ...) {
+      if (!fs::is_absolute_path(file)) {
+        file <- self$make_filename(file, suffix = "csv")
+      }
+
       if (fs::file_exists(file))
         fs::file_delete(file)
 
@@ -120,37 +114,33 @@ GenericExport <- R6::R6Class(
         fs::dir_create()
 
       readr::write_csv(x, file, na = "", ...)
+
+      cli::cli_alert_success(file)
+
+      return(file)
     },
 
-    create_archive = function(archive, files) {
-      if (fs::file_exists(archive))
-        fs::file_delete(archive)
+    create_archive = function() {
+      if (fs::file_exists(self$archive))
+        fs::file_delete(self$archive)
 
       checksums <- purrr::map(files, private$generate_checksums)
-      checksums %>%
-        yaml::write_yaml(private$.manifest)
+      private$create_manifest(checksums)
 
-      filenames <- files %>%
+      files <- files %>%
         unlist() %>%
         as.vector() %>%
-        append(private$.manifest)
+        append(self$manifest)
 
-      if (private$.encrypt) {
-        private$create_encrypted_archive(archive, filenames, private$.password)
+      if (self$args$encrypt) {
+        private$create_encrypted_archive()
       } else {
-        utils::zip(archive, filenames, flags = "--junk-paths")
-        utils::unzip(archive, list = TRUE) %>%
+        utils::zip(self$archive, self$files, flags = "--junk-paths")
+        utils::unzip(self$archive, list = TRUE) %>%
           print()
       }
 
-      checksums <- private$generate_checksums(archive)
-      self$summary_append(key = "output_md5", value = checksums$md5)
-      self$summary_append(key = "output_sha256", value = checksums$sha256)
-    },
-
-    summary_append = function(key, value) {
-      private$.summary <- private$.summary %>%
-        tibble::add_row(key = key, value = as.character(value))
+      private$generate_checksums(self$archive)
     }
   )
 )
