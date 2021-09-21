@@ -11,7 +11,47 @@ GenericExport <- R6::R6Class(
     .files = NULL,
     .manifest = NULL,
     .output_dir = NULL,
-    .timestamp = format(Sys.time(), "%Y_%m_%d"),
+    .timestamp = format(Sys.time(), "%Y_%m_%d")
+  ),
+
+  active = list(
+    archive = function() { private$.archive },
+    config = function() { private$.config },
+    files = function() { private$.files },
+    manifest = function() { private$.manifest },
+    output_dir = function() { private$.output_dir },
+    password = function() { private$.password },
+    timestamp = function() { private$.timestamp }
+  ),
+
+  public = list(
+    initialize = function(...) {
+      super$initialize(...)
+
+      suffix <- "zip"
+      if (self$args$encrypt) {
+        suffix <- "7z"
+        private$.password <- self$generate_password()
+      }
+
+      private$.output_dir <- here::here(
+        fs::path_dir(self$get_source_path()), "output", private$.timestamp
+      )
+
+      private$.archive <- self$make_filename(
+        prefix = "file2",
+        suffix = suffix
+      )
+
+      private$.manifest <- self$make_filename(
+        prefix = "manifest",
+        suffix = "pdf"
+      )
+    },
+
+    load_config = function(filename) {
+      private$.config <- yaml::yaml.load_file(filename)
+    },
 
     get_source_path = function() {
       if (rstudioapi::isAvailable()) {
@@ -40,60 +80,20 @@ GenericExport <- R6::R6Class(
       system(glue::glue("7z l -p{password} {archive}"))
     },
 
-    generate_checksums = function(file) {
+    calulate_checksums = function(file) {
       digest_algos <- list("md5", "sha256")
       checksums <- digest_algos %>%
         set_names() %>%
         map(~ digest::digest(file, algo = .x, file = TRUE))
 
       return(c(filename = fs::path_file(file), checksums))
-    }
-  ),
-
-  active = list(
-    archive = function() { private$.archive },
-    config = function() { private$.config },
-    files = function() { private$.files },
-    manifest = function() { private$.manifest },
-    output_dir = function() { private$.output_dir },
-    password = function() { private$.password },
-    timestamp = function() { private$.timestamp }
-  ),
-
-  public = list(
-    initialize = function(pipeline, ...) {
-      super$initialize(pipeline, ...)
-
-      suffix <- "zip"
-      if (self$args$encrypt) {
-        suffix <- "7z"
-        private$.password <- private$generate_password()
-      }
-
-      private$.output_dir <- here::here(
-        fs::path_dir(private$get_source_path()), "output", private$.timestamp
-      )
-
-      private$.archive <- self$make_filename(
-        prefix = "exceed",
-        suffix = suffix
-      )
-
-      private$.manifest <- self$make_filename(
-        prefix = "exceed_manifest",
-        suffix = "txt"
-      )
-    },
-
-    load_config = function(filename) {
-      private$.config <- yaml::yaml.load_file(filename)
     },
 
     make_filename = function(prefix, suffix) {
       filename <- fs::path(
         self$output_dir,
         paste(
-          paste("exceed", prefix, self$timestamp, sep = "_"),
+          paste(c("exceed", prefix, self$timestamp), collapse = "_"),
           suffix,
           sep = "."
         )
@@ -120,27 +120,34 @@ GenericExport <- R6::R6Class(
       return(file)
     },
 
-    create_archive = function() {
+    create_archive = function(files) {
       if (fs::file_exists(self$archive))
         fs::file_delete(self$archive)
 
-      checksums <- purrr::map(files, private$generate_checksums)
-      private$create_manifest(checksums)
-
-      files <- files %>%
-        unlist() %>%
-        as.vector() %>%
-        append(self$manifest)
-
       if (self$args$encrypt) {
-        private$create_encrypted_archive()
+        self$create_encrypted_archive(self$archive, files)
       } else {
-        utils::zip(self$archive, self$files, flags = "--junk-paths")
+        utils::zip(self$archive, files, flags = "--junk-paths")
         utils::unzip(self$archive, list = TRUE) %>%
           print()
       }
+    },
 
-      private$generate_checksums(self$archive)
+    create_manifest = function(files, tables, template) {
+      files <- files %>%
+        purrr::map_dfr(self$calulate_checksums)
+
+      rmarkdown::render(
+        template,
+        output_file = self$manifest,
+        params = list(
+          archive = self$archive %>%
+            self$calulate_checksums() %>%
+            as_tibble(),
+          tables = tables,
+          files = files
+        )
+      )
     }
   )
 )

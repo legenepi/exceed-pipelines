@@ -1,14 +1,32 @@
 #' ExportSurvey - pipeline step for preparing survey exports.
 ExportSurvey <- R6::R6Class(
   "ExportSurvey",
-  inherit = Step,
+  inherit = ExportTable,
 
-  private = list(
+  public = list(
+    transform = function(...) {
+      metadata <- self$prepare_metadata()
+      dataset <- self$prepare_dataset(metadata)
+
+      self$write_table(metadata, dataset)
+    },
+
+    get_field_types = function() {
+      self$args$parent$config$redcap$fields %>%
+        map(~ {
+          if (is.null(.x$exclude) || .x$exclude == FALSE)
+            return(.x$input)
+        }) %>%
+        unlist()
+    },
+
     prepare_metadata = function() {
       metadata <- self$client$pipeline() %>%
         add_step(
           LoadSurveyMetadata,
-          field_types = private$get_field_types(),
+          field_types = self$get_field_types(),
+          fields_include = self$get_fields(exclude = FALSE),
+          fields_exclude <- self$get_fields(exclude = TRUE),
           !!!self$args
         ) %>%
         select(
@@ -33,7 +51,7 @@ ExportSurvey <- R6::R6Class(
 
       # handle any field overrides from the config
       metadata <- metadata %>%
-        mutate(type = private$get_field_type_overrides(variable, type))
+        mutate(type = self$get_field_type_overrides(variable, type))
 
       # build field type map
       field_map <- self$args$parent$config$redcap$fields %>%
@@ -53,25 +71,15 @@ ExportSurvey <- R6::R6Class(
           )
         )
 
-      # add any extra fields
-      for (field in self$args$parent$config$metadata$fields) {
-        metadata <- metadata %>%
-          add_row(
-            variable = field$name,
-            description = field$description,
-            type = field$type,
-            .before = field$position
-          )
-      }
-
-      rename_with(
-        metadata,
-        str_to_upper,
-        .cols = c("variable", "description", "type", "value", "label")
-      )
+      self$add_shared_metadata(metadata)
     },
 
-    prepare_dataset = function(fields) {
+    prepare_dataset = function(metadata) {
+      fields <- metadata %>%
+        filter(!is.na(field)) %>%
+        distinct(field) %>%
+        pull()
+
       dataset <- self$client$pipeline() %>%
         add_step(!!self$args$exporters$dataset) %>%
         add_step(MergeUUIDs, domain = "exceed", by = "exceed_id") %>%
@@ -93,71 +101,9 @@ ExportSurvey <- R6::R6Class(
           else
             return(x)
         })) %>%
-          rename_with(function(col) {
-            paste(self$args$prefix, col, sep = "_")
-          }, .cols = fields)
-    },
-
-    get_survey_fields = function(metadata) {
-      metadata %>%
-        filter(!is.na(field)) %>%
-        distinct(field) %>%
-        pull()
-    },
-
-    get_field_types = function() {
-      self$args$parent$config$redcap$fields %>%
-        map(~ {
-          if (is.null(.x$exclude) || .x$exclude == FALSE)
-            return(.x$input)
-        }) %>%
-        unlist()
-    },
-
-    get_field_type_overrides = function(name, type) {
-      if (is.null(self$args$fields))
-        return(type)
-
-      field_types <- self$args$fields %>%
-        map_dfr(~ tibble(name = .x$name, type = .x$type))
-
-      if (!("type" %in% names(field_types)))
-        return(type)
-
-      field_types <- field_types %>%
-        deframe %>%
-        as.list()
-
-      map2(name, type, function(.x, .y) {
-        index = str_which(.x, names(field_types))
-        if (length(index))
-          return(field_types[[index]])
-        else
-          return(.y)
-      }) %>%
-        unlist()
-    }
-  ),
-
-  public = list(
-    transform = function(...) {
-      metadata <- private$prepare_metadata()
-      fields <- private$get_survey_fields(metadata)
-      dataset <- private$prepare_dataset(fields)
-
-      metadata_filename <- self$args$parent$write_csv(
-        select(metadata, -field),
-        paste(self$args$name, "metadata", sep = "_")
-      )
-      dataset_filename <- self$args$parent$write_csv(dataset, self$args$name)
-
-      tibble(
-        table = self$args$name,
-        variables = n_distinct(metadata$VARIABLE),
-        observations = nrow(dataset),
-        dataset = dataset_filename,
-        metadata = metadata_filename
-      )
+        rename_with(function(col) {
+          paste(self$args$prefix, col, sep = "_")
+        }, .cols = fields)
     }
   )
 )

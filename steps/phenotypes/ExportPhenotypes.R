@@ -38,7 +38,7 @@ ExportPhenotypes <- R6::R6Class(
     prepare_dataset = function(metadata) {
 
       floats <- metadata %>%
-        filter(TYPE == "FLOAT") %>%
+        filter(TYPE == "DOUBLE") %>%
         pull("VARIABLE")
 
       dataset <- self$client$pipeline() %>%
