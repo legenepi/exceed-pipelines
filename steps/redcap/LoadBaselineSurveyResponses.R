@@ -9,7 +9,7 @@ LoadBaselineSurveyResponses <- R6::R6Class(
     date_fields = c("gen1"),
 
     normalize_gen1 = function(.data, .vars) {
-      .vars <- names(keep(.vars, ~ . == "gen1"))
+      .vars <- names(purrr::keep(.vars, ~ . == "gen1"))
       if (!length(.vars))
         return(.data)
 
@@ -21,12 +21,12 @@ LoadBaselineSurveyResponses <- R6::R6Class(
 
       mutate(
         .data,
-        across(.vars, ~ case_when(. %in% date_range ~ .))
+        across(.vars, ~ dplyr::case_when(. %in% date_range ~ .))
       )
     },
 
     normalize_gen2 = function(.data, .vars) {
-      .vars <- names(keep(.vars, ~ . == "gen2"))
+      .vars <- names(purrr::keep(.vars, ~ . == "gen2"))
       if (!length(.vars))
         return(.data)
 
@@ -35,7 +35,7 @@ LoadBaselineSurveyResponses <- R6::R6Class(
         across(.vars, function(.x) {
           gen2_levels <- list(Male = "Man", Female = "Woman")
           if (is.factor(.x) & all(gen2_levels %in% levels(.x)))
-            fct_recode(
+            forcats::fct_recode(
               .x,
               Male = gen2_levels$Male,
               Female = gen2_levels$Female
@@ -44,8 +44,10 @@ LoadBaselineSurveyResponses <- R6::R6Class(
             return(.x)
         })
       )
-    },
+    }
+  ),
 
+  public = list(
     get_responses = function(project, collect) {
       responses <- super$get_responses(project = project, collect = collect) %>%
         dplyr::rename(exceed_id = exceed_study_id) %>%
@@ -59,10 +61,8 @@ LoadBaselineSurveyResponses <- R6::R6Class(
       self$logger$info("received %d responses from %s", nrow(responses), project)
 
       return(responses)
-    }
-  ),
+    },
 
-  public = list(
     transform = function(.data, .collect, ...) {
       tables <- private$redcap() %>%
         src_tbls() %>%
@@ -72,7 +72,7 @@ LoadBaselineSurveyResponses <- R6::R6Class(
       tables %>%
         purrr::map_dfr(function(project) {
           pb$message(glue::glue("{cli::symbol$bullet} {project}"))
-          responses <- private$get_responses(
+          responses <- self$get_responses(
             project = project,
             collect = .collect,
             ...

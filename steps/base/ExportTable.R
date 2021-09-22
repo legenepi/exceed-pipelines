@@ -30,6 +30,13 @@ ExportTable <- R6::R6Class(
       return(metadata)
     },
 
+    add_prefix = function(dataset) {
+      dataset %>%
+        rename_with(function(col) {
+          paste(self$args$prefix, col, sep = "_")
+        }, .cols = c(everything(), -STUDY_ID))
+    },
+
     #' field type overrides
     get_field_type_overrides = function(name, type) {
       if (is.null(self$args$fields))

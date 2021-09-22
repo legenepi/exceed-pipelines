@@ -36,9 +36,7 @@ ExportAntibodyTestResults <- R6::R6Class(
         select(-uuid)
 
       dataset %>%
-        rename_with(function(col) {
-          paste(self$args$prefix, col, sep = "_")
-        }, .cols = fields)
+        self$add_prefix()
     }
   )
 )

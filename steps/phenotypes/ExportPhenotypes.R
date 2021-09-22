@@ -1,45 +1,31 @@
 #' ExportPhenotypes - pipeline step for exporting antibody test results
 ExportPhenotypes <- R6::R6Class(
   "ExportPhenotypes",
-  inherit = Step,
+  inherit = ExportTable,
 
-  private = list(
-    get_fields_to_exclude = function() {
-      fields_exclude <- self$args$fields %>%
-        map(~ {
-          if (.x$exclude)
-            return(.x$name)
-        }) %>%
-        unlist()
+  public = list(
+    transform = function(...) {
+      metadata <- self$prepare_metadata()
+      dataset <- self$prepare_dataset(metadata)
+
+      self$write_table(metadata, dataset)
     },
 
     prepare_metadata = function() {
+      fields_exclude <- self$get_fields(exclude = TRUE)
+
       metadata <- readr::read_csv(
         here::here(self$args$metadata),
         show_col_types = FALSE
       ) %>%
-        filter(!(variable %in% private$get_fields_to_exclude())) %>%
+        filter(!(variable %in% fields_exclude)) %>%
         mutate(variable = paste(self$args$prefix, variable, sep = "_"))
 
-      # add any extra fields
-      for (field in self$args$parent$config$metadata$fields) {
-        metadata <- metadata %>%
-          add_row(
-            variable = field$name,
-            type = field$type,
-            description = field$description,
-            .before = field$position
-          )
-      }
-
-      rename_with(metadata, str_to_upper)
+      self$add_shared_metadata(metadata)
     },
 
     prepare_dataset = function(metadata) {
-
-      floats <- metadata %>%
-        filter(TYPE == "DOUBLE") %>%
-        pull("VARIABLE")
+      fields_exclude <- self$get_fields(exclude = TRUE)
 
       dataset <- self$client$pipeline() %>%
         add_step(LoadPhenotypes) %>%
@@ -47,36 +33,19 @@ ExportPhenotypes <- R6::R6Class(
         collect() %>%
         left_join(self$args$identities, by = "uuid") %>%
         filter(!is.na(uuid) & !is.na(STUDY_ID)) %>%
+        group_by(STUDY_ID) %>%
+        filter(row_number() == 1)  %>%
         relocate(STUDY_ID) %>%
-        select(-uuid, -private$get_fields_to_exclude())
+        select(-uuid, -fields_exclude)
+
+      doubles <- metadata %>%
+        filter(type == "DOUBLE") %>%
+        pull("variable")
 
       dataset %>%
-        rename_with(function(col) {
-          paste(self$args$prefix, col, sep = "_")
-        }, .cols = -c("STUDY_ID")) %>%
-        mutate(across(floats, ~ round(as.double(.), digits = 2))) %>%
-        select(metadata$VARIABLE)
-    }
-  ),
-
-  public = list(
-    transform = function(...) {
-      metadata <- private$prepare_metadata()
-      dataset <- private$prepare_dataset(metadata)
-
-      metadata_filename <- self$args$parent$write_csv(
-        metadata,
-        paste(self$args$name, "metadata", sep = "_")
-      )
-      dataset_filename <- self$args$parent$write_csv(dataset, self$args$name)
-
-      tibble(
-        table = self$args$name,
-        variables = n_distinct(metadata$VARIABLE),
-        observations = nrow(dataset),
-        dataset = dataset_filename,
-        metadata = metadata_filename
-      )
+        self$add_prefix() %>%
+        mutate(across(doubles, ~ round(as.double(.), digits = 2))) %>%
+        select(metadata$variable)
     }
   )
 )

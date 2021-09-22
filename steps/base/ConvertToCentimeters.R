@@ -33,7 +33,7 @@ ConvertToCentimeters <- R6::R6Class(
 
       .data %>%
         mutate(
-          !!self$args$into := private$convert(
+          !!self$args$centimeters := private$convert(
             unit = unit,
             centimeters = centimeters,
             feet = feet,

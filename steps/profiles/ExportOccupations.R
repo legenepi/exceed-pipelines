@@ -35,7 +35,7 @@ ExportOccupations <- R6::R6Class(
         select(id, uuid, !!field_map) %>%
         collect() %>%
         mutate(across(where(is.logical), as.numeric)) %>%
-        mutate(across(fields, ~ na_if(str_replace_all(., "\\}", ""), ""))) %>%
+        mutate(across(fields, ~ na_if(str_replace_all(., "\\}|nan", ""), ""))) %>%
         filter(if_any(c(everything(), -id, -uuid), ~ !is.na(.x))) %>%
         left_join(self$args$identities, by = "uuid") %>%
         filter(!is.na(uuid) & !is.na(STUDY_ID)) %>%
@@ -46,9 +46,8 @@ ExportOccupations <- R6::R6Class(
         select(-c(id, uuid))
 
       dataset %>%
-        rename_with(function(col) {
-          paste(self$args$prefix, str_replace(col, "occupation__", ""), sep = "_")
-        }, .cols = fields)
+        rename_with(~ str_replace(., "occupation__", "")) %>%
+        self$add_prefix()
     }
   )
 )

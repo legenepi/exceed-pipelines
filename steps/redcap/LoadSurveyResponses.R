@@ -22,27 +22,11 @@ LoadSurveyResponses <- R6::R6Class(
       if (is.null(private$date_fields))
         return(.data)
 
-      date_fields <- names(keep(.data$vars, ~ . %in% private$date_fields))
+      date_fields <- names(purrr::keep(.data$vars, ~ . %in% private$date_fields))
 
       .data %>%
         .collect() %>%
         mutate(across(date_fields, ~ lubridate::ymd(.)))
-    },
-
-    #' load responses from a questionnaire
-    get_responses = function(project, collect) {
-      self$logger$info("loading responses project=%s", project)
-
-      project <- private$redcap(project)
-
-      # extract the name of survey instrument
-      forms <- project %>%
-        metadata() %>%
-        purrr::pluck("info") %>%
-        purrr::pluck("forms")
-
-      project %>%
-        dplyr::rename_all(~ stringr::str_replace(., paste0(forms[1], "_"), ""))
     }
   ),
 
@@ -62,7 +46,7 @@ LoadSurveyResponses <- R6::R6Class(
     },
 
     transform = function(.data, .collect, ...) {
-      responses <- private$get_responses(
+      responses <- self$get_responses(
         project = private$project,
         collect = .collect
       )
@@ -70,6 +54,22 @@ LoadSurveyResponses <- R6::R6Class(
       responses %>%
         private$apply_steps(.collect) %>%
         private$convert_date_fields(.collect)
+    },
+
+    #' load responses from a questionnaire
+    get_responses = function(project, collect) {
+      self$logger$info("loading responses project=%s", project)
+
+      project <- private$redcap(project)
+
+      # extract the name of survey instrument
+      forms <- project %>%
+        metadata() %>%
+        purrr::pluck("info") %>%
+        purrr::pluck("forms")
+
+      project %>%
+        dplyr::rename_all(~ stringr::str_replace(., paste0(forms[1], "_"), ""))
     }
   )
 )

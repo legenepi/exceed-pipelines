@@ -30,7 +30,7 @@ ConvertToKilograms <- R6::R6Class(
 
       .data %>%
         mutate(
-          !!self$args$into := private$convert(
+          !!self$args$kilograms := private$convert(
             unit = unit,
             kilograms = kilograms,
             stones = stones,
@@ -47,4 +47,3 @@ ConvertToKilograms <- R6::R6Class(
   )
 )
 
-as.double(c("10", "", "5"))

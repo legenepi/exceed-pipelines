@@ -81,7 +81,7 @@ ExportSurvey <- R6::R6Class(
         pull()
 
       dataset <- self$client$pipeline() %>%
-        add_step(!!self$args$exporters$dataset) %>%
+        add_step(!!self$args$exporter) %>%
         add_step(MergeUUIDs, domain = "exceed", by = "exceed_id") %>%
         collect() %>%
         select(uuid, timestamp, complete, fields) %>%
@@ -94,16 +94,14 @@ ExportSurvey <- R6::R6Class(
         relocate(STUDY_ID) %>%
         select(-c(uuid, timestamp, complete))
 
-      dataset <- dataset %>%
+      dataset %>%
         mutate(across(everything(), function(x) {
           if (is.factor(x))
             as.numeric(x)
           else
             return(x)
         })) %>%
-        rename_with(function(col) {
-          paste(self$args$prefix, col, sep = "_")
-        }, .cols = fields)
+        self$add_prefix()
     }
   )
 )
