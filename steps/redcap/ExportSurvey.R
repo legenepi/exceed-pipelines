@@ -26,7 +26,7 @@ ExportSurvey <- R6::R6Class(
           LoadSurveyMetadata,
           field_types = self$get_field_types(),
           fields_include = self$get_fields(exclude = FALSE),
-          fields_exclude <- self$get_fields(exclude = TRUE),
+          fields_exclude = self$get_fields(exclude = TRUE),
           !!!self$args
         ) %>%
         select(
@@ -52,6 +52,10 @@ ExportSurvey <- R6::R6Class(
       # handle any field overrides from the config
       metadata <- metadata %>%
         mutate(type = self$get_field_type_overrides(variable, type))
+
+      # replace 'exceed' with 'x' in field names
+      metadata <- metadata %>%
+        mutate(variable = str_replace(variable, regex("exceed", ignore_case = TRUE), "x"))
 
       # build field type map
       field_map <- self$args$parent$config$redcap$fields %>%
@@ -85,6 +89,7 @@ ExportSurvey <- R6::R6Class(
         add_step(MergeUUIDs, domain = "exceed", by = "exceed_id") %>%
         collect() %>%
         select(uuid, timestamp, complete, fields) %>%
+        rename_with(~ str_replace(., regex("exceed", ignore_case = TRUE), "x")) %>%
         filter(complete == 2, !is.na(uuid)) %>%
         left_join(self$args$identities, by = "uuid") %>%
         filter(!is.na(uuid) & !is.na(STUDY_ID)) %>%
