@@ -59,7 +59,7 @@ GenericExport <- R6::R6Class(
         "git symbolic-ref -q --short HEAD",
         "git rev-parse --short HEAD"
       )
-      system(paste(commands, collapse = "||"))
+      system(paste(commands, collapse = "||"), intern = TRUE)
     },
 
     get_source_path = function() {
