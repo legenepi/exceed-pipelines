@@ -150,7 +150,7 @@ GenericExport <- R6::R6Class(
           print()
       }
 
-      cli::cli_alert_success(fs::path_file(self$archive))
+      cli::cli_alert_success(self$archive)
     },
 
     create_manifest = function(files, tables, template) {
@@ -174,7 +174,7 @@ GenericExport <- R6::R6Class(
           files = files
         )
       )
-      cli::cli_alert_success(fs::path_file(self$manifest))
+      cli::cli_alert_success(self$manifest)
     }
   )
 )

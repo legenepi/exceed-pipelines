@@ -5,6 +5,7 @@ BreatheExport <- R6::R6Class(
 
   public = list(
     transform = function(...) {
+      cli::cli_h1("BREATHE export")
       self$load_config(here::here("projects/breathe/config.yaml"))
 
       tables <- self$prepare_export()
@@ -35,11 +36,13 @@ BreatheExport <- R6::R6Class(
     },
 
     prepare_export = function() {
+      cli::cli_h2("Identities")
       identities <- self$client$pipeline() %>%
         add_step(LoadIdentities, domain = "breathe") %>%
         select(uuid, STUDY_ID = pid) %>%
         collect()
 
+      cli::cli_h2("Profiles")
       exclusions <- self$client$pipeline() %>%
         add_step(LoadProfiles) %>%
         add_step(MergeUUIDs, domain = "exceed", by = "exceed_id") %>%
@@ -51,10 +54,12 @@ BreatheExport <- R6::R6Class(
       identities <- identities %>%
         anti_join(exclusions, by = "uuid")
 
+      cli::cli_h1("Exporting tables")
+
       self$config$tables %>%
         discard(~ .$skip) %>%
         map_dfr(~ {
-          cli::cli_h2("Table: {.x$name}")
+          cli::cli_h2(.x$name)
           .x$args$name <- .x$name
           self$client$pipeline() %>%
             add_step(
