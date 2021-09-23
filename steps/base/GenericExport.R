@@ -10,6 +10,7 @@ GenericExport <- R6::R6Class(
     .password = NULL,
     .archive = NULL,
     .files = NULL,
+    .codebook = NULL,
     .manifest = NULL,
     .output_dir = NULL,
     .timestamp = format(lubridate::today(), "%Y_%m_%d"),
@@ -26,6 +27,7 @@ GenericExport <- R6::R6Class(
     archive = function() { private$.archive },
     config = function() { private$.config },
     files = function() { private$.files },
+    codebook = function() { private$.codebook },
     manifest = function() { private$.manifest },
     output_dir = function() { private$.output_dir },
     password = function() { private$.password },
@@ -54,15 +56,9 @@ GenericExport <- R6::R6Class(
         private$.password <- self$generate_password()
       }
 
-      private$.archive <- self$make_filename(
-        prefix = "file2",
-        suffix = suffix
-      )
-
-      private$.manifest <- self$make_filename(
-        prefix = "manifest",
-        suffix = "csv"
-      )
+      private$.archive <- self$make_filename(prefix = "file2", suffix = suffix)
+      private$.codebook <- self$make_filename(prefix = "codebook", suffix = "pdf")
+      private$.manifest <- self$make_filename(prefix = "manifest", suffix = "csv")
     },
 
     get_config = function() {
@@ -278,17 +274,12 @@ GenericExport <- R6::R6Class(
     create_manifest_pdf = function(tables) {
       cli::cli_h2("Creating manifest (.pdf)")
 
-      template <- here::here(self$get_source_path(), "manifest_template.Rmd")
-
       files <- private$get_file_list(tables) %>%
         purrr::map_dfr(self$calulate_checksums)
 
-      output_file <- fs::path_ext_set(self$manifest, "pdf")
-
-      rmarkdown::render(
-        template,
-        output_file = output_file,
-        output_format = rmarkdown::pdf_document(),
+      self$render_markdown(
+        input = here::here(self$get_source_path(), "manifest_template.Rmd"),
+        output_file = fs::path_ext_set(self$manifest, "pdf"),
         params = list(
           encrypt = self$args$encrypt,
           version = self$get_version(),
@@ -296,9 +287,32 @@ GenericExport <- R6::R6Class(
           archive = self$archive %>%
             self$calulate_checksums() %>%
             as_tibble(),
-          tables = tables,
-          files = files
+          files = files,
+          tables = tables
         )
+      )
+    },
+
+    create_codebook = function(tables) {
+      cli::cli_h2("Creating codebook (.pdf)")
+
+      self$render_markdown(
+        input = here::here(self$get_source_path(), "codebook_template.Rmd"),
+        output_file = self$codebook,
+        params = list(
+          version = self$get_version(),
+          snapshot = self$client$snapshot,
+          tables = tables
+        )
+      )
+    },
+
+    render_markdown = function(input, output_file, ...) {
+      rmarkdown::render(
+        input = input,
+        output_file = output_file,
+        output_format = rmarkdown::pdf_document(),
+        ...
       )
       cli::cli_alert_success(output_file)
     }

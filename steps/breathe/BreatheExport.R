@@ -15,6 +15,8 @@ BreatheExport <- R6::R6Class(
 
       self$create_manifest(tables)
 
+      self$create_codebook(tables)
+
       self$show_summary()
 
       return(tables)
