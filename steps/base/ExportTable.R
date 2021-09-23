@@ -16,6 +16,31 @@ ExportTable <- R6::R6Class(
         unlist()
     },
 
+    alert_warning = function(message, success, ...) {
+      args <- c(...)
+      alert_func <- ifelse(success, cli::cli_alert_success, cli::cli_alert_warning)
+      alert_func(message)
+      if (!success & !is.null(args))
+        alert_func(args)
+    },
+
+    alert_danger = function(message, success, ...) {
+      args <- c(...)
+      alert_func <- ifelse(success, cli::cli_alert_success, cli::cli_alert_danger)
+      alert_func(message)
+      if (!success & !is.null(args))
+        alert_func(args)
+    },
+
+    check_study_id_range = function(study_id) {
+      fields <- self$args$parent$config$metadata$fields
+      fields <- fields %>%
+        set_names(map(fields, ~ .$name))
+
+      study_id_range <- unlist(fields$STUDY_ID$range)
+      min(study_id) >= min(study_id_range) & max(study_id) <= max(study_id_range)
+    },
+
     #' add any shared metadata from config
     add_shared_metadata = function(metadata) {
       for (field in self$args$parent$config$metadata$fields) {
@@ -62,6 +87,71 @@ ExportTable <- R6::R6Class(
         unlist()
     },
 
+    verify_table = function(metadata, dataset) {
+      cli::cli_h3("Verifying table")
+
+      missing_vars <- length(setdiff(metadata$variable, names(dataset)))
+      self$alert_danger(
+        glue::glue("{missing_vars} missing variables"),
+        missing_vars == 0
+      )
+
+      factors <- dataset %>%
+        select(where(is.factor)) %>%
+        ncol()
+      self$alert_danger(glue::glue("{factors} factors"), factors == 0)
+
+      character_fields <- metadata %>%
+        filter(type == "CHARACTER") %>%
+        pull(variable)
+      character_fields_count <- length(character_fields)
+
+      self$alert_warning(
+        glue::glue("{character_fields_count} CHARACTER fields in metadata"),
+        character_fields_count == 0,
+        paste(character_fields, collapse = " ")
+      )
+
+      character_fields <- dataset %>%
+        select(where(is.character)) %>%
+        names()
+      character_fields_count <- length(character_fields)
+
+      self$alert_warning(
+        glue::glue("{character_fields_count} CHARACTER fields in dataset"),
+        character_fields_count == 0
+      )
+
+      study_id_var <- "STUDY_ID"
+      self$alert_danger(
+        glue::glue("{study_id_var} in metadata and dataset"),
+        study_id_var %in% names(dataset) & study_id_var %in% metadata$variable
+      )
+
+      study_id_dulicates <- dataset %>%
+        group_by(across(study_id_var)) %>%
+        tally() %>%
+        filter(n > 1) %>%
+        nrow()
+      self$alert_danger(
+        glue::glue("{study_id_var} with {study_id_dulicates} duplicates"),
+        study_id_dulicates == 0
+      )
+
+      study_id <- dataset[[study_id_var]]
+      study_id_na <- sum(is.na(study_id))
+      self$alert_danger(
+        glue::glue("{study_id_var} with {study_id_na} NAs"),
+        study_id_na == 0
+      )
+
+      study_id_range <- paste(range(study_id), collapse = " - ")
+      self$alert_danger(
+        glue::glue("{study_id_var} range: {study_id_range}"),
+        self$check_study_id_range(study_id)
+      )
+    },
+
     #' write metadata to file
     write_metadata = function(metadata, ...) {
       self$args$parent$write_csv(
@@ -87,6 +177,9 @@ ExportTable <- R6::R6Class(
     },
 
     write_table = function(metadata, dataset) {
+      self$verify_table(metadata, dataset)
+
+      cli::cli_h3("Saving table")
       metadata_filename <- self$write_metadata(
         metadata,
         paste(self$args$name, "metadata", sep = "_")

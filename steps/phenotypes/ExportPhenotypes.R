@@ -35,6 +35,7 @@ ExportPhenotypes <- R6::R6Class(
         filter(!is.na(uuid) & !is.na(STUDY_ID)) %>%
         group_by(STUDY_ID) %>%
         filter(row_number() == 1)  %>%
+        ungroup() %>%
         relocate(STUDY_ID) %>%
         select(-uuid, -fields_exclude)
 

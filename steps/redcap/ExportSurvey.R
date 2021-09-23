@@ -96,16 +96,12 @@ ExportSurvey <- R6::R6Class(
         group_by(STUDY_ID) %>%
         arrange(STUDY_ID, timestamp) %>%
         filter(row_number() == 1)  %>%
+        ungroup() %>%
         relocate(STUDY_ID) %>%
         select(-c(uuid, timestamp, complete))
 
       dataset %>%
-        mutate(across(everything(), function(x) {
-          if (is.factor(x))
-            as.numeric(x)
-          else
-            return(x)
-        })) %>%
+        mutate(across(where(is.factor), ~ as.numeric(.x))) %>%
         self$add_prefix()
     }
   )

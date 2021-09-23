@@ -42,6 +42,7 @@ ExportOccupations <- R6::R6Class(
         group_by(STUDY_ID) %>%
         arrange(STUDY_ID, id) %>%
         filter(row_number() == n())  %>%
+        ungroup() %>%
         relocate(STUDY_ID) %>%
         select(-c(id, uuid))
 
