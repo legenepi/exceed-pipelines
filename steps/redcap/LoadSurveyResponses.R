@@ -6,27 +6,17 @@ LoadSurveyResponses <- R6::R6Class(
 
   private = list(
     project = NULL,
-    date_fields = NULL,
+    parse_dates = NULL,
 
     # create redcap object
     redcap = function(project = NULL) {
       self$client$redcap(
         project = project,
         snapshot = self$snapshot,
+        parse_dates = private$parse_dates,
         parse_factors = self$args$parse_factors,
         parse_survey_fields = self$args$parse_survey_fields
       )
-    },
-
-    convert_date_fields = function(.data, .collect) {
-      if (is.null(private$date_fields))
-        return(.data)
-
-      date_fields <- names(purrr::keep(.data$vars, ~ . %in% private$date_fields))
-
-      .data %>%
-        .collect() %>%
-        mutate(across(date_fields, ~ lubridate::ymd(.)))
     }
   ),
 
@@ -50,10 +40,7 @@ LoadSurveyResponses <- R6::R6Class(
         project = private$project,
         collect = .collect
       )
-
-      responses %>%
-        private$apply_steps(.collect) %>%
-        private$convert_date_fields(.collect)
+      private$apply_steps(responses, .collect)
     },
 
     #' load responses from a questionnaire

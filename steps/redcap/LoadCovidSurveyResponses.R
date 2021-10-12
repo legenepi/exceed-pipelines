@@ -5,13 +5,19 @@ LoadCovidSurveyResponses <- R6::R6Class(
   inherit = LoadSurveyResponses,
 
   private = list(
+    project = "covid",
     date_fields = c("s1_5b")
   ),
 
   public = list(
-    initialize = function(pipeline, version = NULL, ...) {
-      private$project <- paste(c("covid", version), collapse = "-")
+    initialize = function(pipeline, ...) {
       super$initialize(pipeline, ...)
+      if (!is.null(self$args$version)) {
+        private$project <- paste(
+          c(private$project, as.integer(self$args$version)),
+          collapse = "-v"
+        )
+      }
     }
   )
 )

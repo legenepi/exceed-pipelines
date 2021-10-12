@@ -6,10 +6,21 @@ LoadBaselineSurveyResponses <- R6::R6Class(
   inherit = LoadSurveyResponses,
 
   private = list(
-    date_fields = c("gen1"),
+    parse_dates = c("gen1"),
 
-    normalize_gen1 = function(.data, .vars) {
-      .vars <- names(purrr::keep(.vars, ~ . == "gen1"))
+    normalize_exceed_id = function(.data) {
+      .vars <- names(purrr::keep(self$vars, ~ . == "exceed_study_id"))
+      if (!length(.vars))
+        return(.data)
+
+      mutate(
+        .data,
+        across(.vars, ~ stringr::str_pad(., 6, pad = 0))
+      )
+    },
+
+    normalize_gen1 = function(.data) {
+      .vars <- names(purrr::keep(self$vars, ~ . == "gen1"))
       if (!length(.vars))
         return(.data)
 
@@ -25,8 +36,8 @@ LoadBaselineSurveyResponses <- R6::R6Class(
       )
     },
 
-    normalize_gen2 = function(.data, .vars) {
-      .vars <- names(purrr::keep(.vars, ~ . == "gen2"))
+    normalize_gen2 = function(.data) {
+      .vars <- names(purrr::keep(self$vars, ~ . == "gen2"))
       if (!length(.vars))
         return(.data)
 
@@ -51,12 +62,13 @@ LoadBaselineSurveyResponses <- R6::R6Class(
     get_responses = function(project, collect) {
       responses <- super$get_responses(project = project, collect = collect) %>%
         dplyr::rename(exceed_id = exceed_study_id) %>%
-        private$apply_steps(collect)
+        private$apply_steps(collect) %>%
+        collect()
 
       responses <- responses %>%
-        private$convert_date_fields(.collect = collect) %>%
-        private$normalize_gen1(responses$vars) %>%
-        private$normalize_gen2(responses$vars)
+        private$normalize_exceed_id() %>%
+        private$normalize_gen1() %>%
+        private$normalize_gen2()
 
       self$logger$info("received %d responses from %s", nrow(responses), project)
 
