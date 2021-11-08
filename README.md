@@ -1,4 +1,4 @@
-# exceed.pipelines
+# exceed-pipelines
 
 The pipeline interface is designed to allow writing and sharing of reusable
 code and minimizing the duplication of effort.
