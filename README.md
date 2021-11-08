@@ -53,7 +53,7 @@ pipeline:
     directory.
 
 NOTE: the name of configuration file is different if it's in the home directory
-and must start with a dot \``` .` ``
+and must start with a dot `.`
 
 ## Advanced setup
 
