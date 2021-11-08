@@ -33,17 +33,17 @@ $ git clone git@github.com:legenepi/exceed-pipelines.git ~/exceed/pipelines
 $ git clone https://github.com/legenepi/exceed-pipelines.git ~/exceed/pipelines
 ```
 
-1.  Next, create a configuration that tells the `exceedapi` where to look for
+2.  Next, create a configuration that tells the `exceedapi` where to look for
     pipeline steps. The configuration file must contain at least one directory
     under `pipeline -> search` option:
 
 ```{yaml}
 pipeline:
   search:
-    - ~/exceed/pipelines
+    - ~/exceed/pipelines/steps
 ```
 
-1.  Finally, decide whether you want a per-project configuration file or a
+3.  Finally, decide whether you want a per-project configuration file or a
     global one.
 
 -   For per-project files, create an `exceedapi.yaml` in the top-level
