@@ -1,0 +1,9 @@
+pandoc: 2.7.3
+pkgdown: 2.0.2
+pkgdown_sha: ~
+articles: {}
+last_built: 2022-01-24T23:45Z
+urls:
+  reference: https://github.com/legenepi/exceed-pipelines/reference
+  article: https://github.com/legenepi/exceed-pipelines/articles
+
