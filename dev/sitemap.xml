@@ -1,132 +1,132 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/LICENSE-text.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/LICENSE.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/LICENSE.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/authors.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/authors.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/index.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/index.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/BreatheExport.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/BreatheExport.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/CachedCSV.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/CachedCSV.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/CachedDownload.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/CachedDownload.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/CalculateAge.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/CalculateAge.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/ConvertToCentimeters.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/ConvertToCentimeters.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/ConvertToKilograms.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/ConvertToKilograms.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/ExportAntibodyTestResults.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/ExportAntibodyTestResults.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/ExportBaselineSurveyResponses.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/ExportBaselineSurveyResponses.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/ExportOccupations.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/ExportOccupations.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/ExportPhenotypes.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/ExportPhenotypes.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/ExportSurvey.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/ExportSurvey.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/ExportTable.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/ExportTable.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/FileDownload.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/FileDownload.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/GenericExport.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/GenericExport.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/GroupEthnicities.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/GroupEthnicities.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/LoadAntibodyTestDataset.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/LoadAntibodyTestDataset.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/LoadAntibodyTestResults.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/LoadAntibodyTestResults.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/LoadAntibodyTestSurveyResponses.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/LoadAntibodyTestSurveyResponses.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/LoadBaselineSurveyResponses.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/LoadBaselineSurveyResponses.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/LoadCovidSurveyResponses.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/LoadCovidSurveyResponses.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/LoadDefaultDataset.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/LoadDefaultDataset.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/LoadDemographicProfiles.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/LoadDemographicProfiles.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/LoadFaithful.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/LoadFaithful.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/LoadIdentities.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/LoadIdentities.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/LoadIris.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/LoadIris.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/LoadMotorTrendCars.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/LoadMotorTrendCars.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/LoadONSBoundaries.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/LoadONSBoundaries.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/LoadPhenotypes.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/LoadPhenotypes.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/LoadPostcodes.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/LoadPostcodes.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/LoadPrimaryCarePatients.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/LoadPrimaryCarePatients.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/LoadProfiles.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/LoadProfiles.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/LoadResearchProfessionalCollectedResponses.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/LoadResearchProfessionalCollectedResponses.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/LoadSurveyMetadata.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/LoadSurveyMetadata.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/LoadSurveyResponses.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/LoadSurveyResponses.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/LookupPostcodes.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/LookupPostcodes.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/MergeResearchProfessionalCollectedResponses.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/MergeResearchProfessionalCollectedResponses.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/MergeUUIDs.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/MergeUUIDs.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/PrepareAntibodyTestReport.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/PrepareAntibodyTestReport.html</loc>
   </url>
   <url>
-    <loc>https://legenepi.github.io/exceed-pipelines/dev/reference/index.html</loc>
+    <loc>https://github.com/legenepi/exceed-pipelines/dev/reference/index.html</loc>
   </url>
 </urlset>
