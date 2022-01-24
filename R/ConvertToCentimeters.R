@@ -1,4 +1,11 @@
-#' ConvertToCentimeters - a pipeline step to convert length to centimeters
+#' ConvertToCentimeters
+#'
+#' Convert length to centimeters from imperial units (feet and inches)
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description ConvertToCentimeters class
+#' @importFrom R6 R6Class
 ConvertToCentimeters <- R6::R6Class(
   "ConvertToCentimeters",
   inherit = exceedapi::Step,

@@ -1,4 +1,11 @@
-#' LoadAntibodyTestResults - pipeline step for loading antibody test datasets
+#' LoadAntibodyTestResults
+#'
+#' Load antibody test results.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description LoadAntibodyTestResults class
+#' @importFrom R6 R6Class
 LoadAntibodyTestResults <- R6::R6Class(
   "LoadAntibodyTestResults",
   inherit = exceedapi::Step,

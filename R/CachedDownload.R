@@ -1,4 +1,11 @@
-#' CachedDownload - a step with caching support
+#' CachedDownload
+#'
+#' Downloader for remote files with caching.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description CachedDownload class
+#' @importFrom R6 R6Class
 CachedDownload <- R6::R6Class(
   "CachedDownload",
   inherit = FileDownload,

@@ -1,4 +1,11 @@
-#' BreatheExport - pipeline step for preparing BREATHE export.
+#' BreatheExport
+#'
+#' Prepare data export for BREATHE.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description BreatheExport class
+#' @importFrom R6 R6Class
 BreatheExport <- R6::R6Class(
   "BreatheExport",
   inherit = GenericExport,

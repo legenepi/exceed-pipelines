@@ -1,4 +1,11 @@
-#' LookupPostcodes - pipeline step for postcode lookups
+#' LookupPostcodes
+#'
+#' Lookup postcodes using postcodes.io service
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description LookupPostcodes class
+#' @importFrom R6 R6Class
 LookupPostcodes <- R6::R6Class(
   "LookupPostcodes",
   inherit = exceedapi::Step,

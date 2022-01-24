@@ -1,5 +1,11 @@
-#' GenericExport - pipeline step for preparing data exports.
+#' GenericExport
 #'
+#' Generic export class that includes password-protected compression (optional)
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description GenericExport class
+#' @importFrom R6 R6Class
 GenericExport <- R6::R6Class(
   "GenericExport",
   inherit = exceedapi::Step,

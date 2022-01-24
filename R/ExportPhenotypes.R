@@ -1,4 +1,11 @@
-#' ExportPhenotypes - pipeline step for exporting antibody test results
+#' ExportPhenotypes
+#'
+#' Export phenotypes defined by Leicester GenEpi group.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description ExportPhenotypes class
+#' @importFrom R6 R6Class
 ExportPhenotypes <- R6::R6Class(
   "ExportPhenotypes",
   inherit = ExportTable,

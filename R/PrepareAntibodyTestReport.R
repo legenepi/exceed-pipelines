@@ -1,4 +1,11 @@
-#' PrepareAntibodyTestReport - pipeline step for preparing antibody test report.
+#' PrepareAntibodyTestReport class
+#'
+#' Prepare antibody test report.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description PrepareAntibodyTestReport class
+#' @importFrom R6 R6Class
 PrepareAntibodyTestReport <- R6::R6Class(
   "PrepareAntibodyTestReport",
   inherit = GenericExport,

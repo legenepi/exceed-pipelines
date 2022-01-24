@@ -1,4 +1,11 @@
-#' MergeUUIDs - pipeline step for merging UUIDs
+#' MergeUUIDs
+#'
+#' Merge UUIDs
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description BreatheExport class
+#' @importFrom R6 R6Class
 MergeUUIDs <- R6::R6Class(
   "MergeUUIDs",
   inherit = LoadIdentities,

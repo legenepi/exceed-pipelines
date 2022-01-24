@@ -1,5 +1,11 @@
-#' LoadCovidSurveyResponses - pipeline step for loading survey responses from
-#' COVID questionnaire.
+#' LoadCovidSurveyResponses
+#'
+#' Load survey responses from COVID questionnaires.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description LoadCovidSurveyResponses class
+#' @importFrom R6 R6Class
 LoadCovidSurveyResponses <- R6::R6Class(
   "LoadCovidSurveyResponses",
   inherit = LoadSurveyResponses,

@@ -1,5 +1,12 @@
-#' CalculateAge - a pipeline step to calculate the age based on either today's
-#' date or on a reference date from a variable
+#' CalculateAge
+#'
+#' Calculate the age based on either today's date or a reference date from
+#' a variable.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description CalculateAge class
+#' @importFrom R6 R6Class
 CalculateAge <- R6::R6Class(
   "CalculateAge",
   inherit = exceedapi::Step,

@@ -1,4 +1,11 @@
-#' LoadPhenotypes - pipeline step for loading phenotype dataset
+#' LoadPhenotypes
+#'
+#' Load phenotypes defined by Leicester GenEpi group.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description LoadPhenotypes class
+#' @importFrom R6 R6Class
 LoadPhenotypes <- R6::R6Class(
   "LoadPhenotypes",
   inherit = exceedapi::Step,

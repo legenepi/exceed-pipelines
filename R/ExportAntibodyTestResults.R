@@ -1,4 +1,11 @@
-#' ExportAntibodyTestResults - pipeline step for exporting antibody test results
+#' ExportAntibodyTestResults
+#'
+#' Export antibody test results.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description BreatheExport class
+#' @importFrom R6 R6Class
 ExportAntibodyTestResults <- R6::R6Class(
   "ExportAntibodyTestResults",
   inherit = ExportTable,

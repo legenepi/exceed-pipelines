@@ -1,4 +1,11 @@
-#' ConvertToKilograms - a pipeline step to calculate weight in kilograms
+#' ConvertToKilograms
+#'
+#' Convert mass to kilograms from imperial units (pounds and stones)
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description ConvertToKilograms class
+#' @importFrom R6 R6Class
 ConvertToKilograms <- R6::R6Class(
   "ConvertToKilograms",
   inherit = exceedapi::Step,

@@ -1,6 +1,12 @@
-#' LoadBaselineSurveyResponses - pipeline step for loading baseline
-#' questionnaire responses. This step is designed to load responses from all
-#' baseline questionnaires and combine them into a single data frame.
+#' LoadBaselineSurveyResponses
+#'
+#' Load survey responses from baseline questionnaires.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description LoadBaselineSurveyResponses class. This step load responses
+#' from all baseline questionnaires and combine them into a single data frame.
+#' @importFrom R6 R6Class
 LoadBaselineSurveyResponses <- R6::R6Class(
   "LoadBaselineSurveyResponses",
   inherit = LoadSurveyResponses,

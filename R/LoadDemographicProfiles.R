@@ -1,10 +1,17 @@
-#' LoadDemographicProfiles - pipeline step for combining demographic data
-#' from various sources. Current sources include:
+#' LoadDemographicProfiles
+#'
+#' Combine demographic data from various sources.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description LoadDemographicProfiles class
+#' Pipeline step for combining demographic data from various sources.
+#' Current sources include:
 #' - e-consent
 #' - baseline survey (self-reported)
 #' - research professional collected data
 #' - electronic health records (primary care)
-
+#' @importFrom R6 R6Class
 LoadDemographicProfiles <- R6::R6Class(
   "LoadDemographicProfiles",
   inherit = exceedapi::Step,

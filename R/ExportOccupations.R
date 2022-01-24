@@ -1,4 +1,11 @@
-#' ExportOccupations - pipeline step for exporting occupation table
+#' ExportOccupations
+#'
+#' Export occupation table
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description ExportOccupations class
+#' @importFrom R6 R6Class
 ExportOccupations <- R6::R6Class(
   "ExportOccupations",
   inherit = ExportTable,

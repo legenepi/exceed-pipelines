@@ -1,5 +1,11 @@
-#' LoadPrimaryCarePatients - pipeline step for loading patient data from
-#' primary care tables in electronic health records
+#' LoadPrimaryCarePatients
+#'
+#' Load patient data from primary care tables in electronic health records.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description LoadPrimaryCarePatients class
+#' @importFrom R6 R6Class
 LoadPrimaryCarePatients <- R6::R6Class(
   "LoadPrimaryCarePatients",
   inherit = exceedapi::Step,

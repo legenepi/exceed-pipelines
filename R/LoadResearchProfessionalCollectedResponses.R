@@ -1,5 +1,11 @@
-#' LoadResearchProfessionalCollectedResponses - pipeline step for loading
-#' responses collected by research professionals for baseline questionnaire
+#' LoadResearchProfessionalCollectedResponses
+#'
+#' Load responses collected by research professionals.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description LoadResearchProfessionalCollectedResponses class
+#' @importFrom R6 R6Class
 LoadResearchProfessionalCollectedResponses <- R6::R6Class(
   "LoadResearchProfessionalCollectedResponses",
   inherit = LoadSurveyResponses,

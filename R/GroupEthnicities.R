@@ -1,4 +1,12 @@
-#' GroupEthnicities - a pipeline step to group ethnicities
+#' GroupEthnicities
+#'
+#' Group ethnicities into broader categories.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description GroupEthnicities groups ethnicities from self-reported survey
+#' responses into White, Black, Asian, Chinese, Mixed, and Other.
+#' @importFrom R6 R6Class
 GroupEthnicities <- R6::R6Class(
   "GroupEthnicities", inherit = exceedapi::Step,
 

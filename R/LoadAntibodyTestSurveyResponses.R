@@ -1,5 +1,11 @@
-#' LoadAntibodyTestSurveyResponses - pipeline step for loading survey responses
-#' from antibody test questionnaire.
+#' LoadAntibodyTestSurveyResponses
+#'
+#' Load responses from antibody test questionnaire.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description LoadAntibodyTestSurveyResponses class
+#' @importFrom R6 R6Class
 LoadAntibodyTestSurveyResponses <- R6::R6Class(
   "LoadAntibodyTestSurveyResponses",
   inherit = LoadSurveyResponses,

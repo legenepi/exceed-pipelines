@@ -1,18 +1,24 @@
-#' LoadSurveyMetadata - pipeline step for loading survey metadata from any
-#' questionnaire.
+#' LoadSurveyMetadata
+#'
+#' Load survey metadata from REDCap questionnaires.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description LoadSurveyMetadata class
+#' @importFrom R6 R6Class
 LoadSurveyMetadata <- R6::R6Class(
   "LoadSurveyMetadata",
   inherit = exceedapi::Step,
 
   private = list(
-    #' strip html tags
+    # strip html tags
     strip_tags = function(x) {
       x %>%
         str_replace_all("<.*?>", " ") %>%
         str_squish()
     },
 
-    #' get metadata from a questionnaire
+    # get metadata from a questionnaire
     get_metadata = function() {
       self$logger$info("loading metadata survey=%s", self$args$slug)
 

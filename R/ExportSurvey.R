@@ -1,4 +1,11 @@
-#' ExportSurvey - pipeline step for preparing survey exports.
+#' ExportSurvey
+#'
+#' Export REDCap survey responses
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description ExportSurvey class
+#' @importFrom R6 R6Class
 ExportSurvey <- R6::R6Class(
   "ExportSurvey",
   inherit = ExportTable,
@@ -53,7 +60,7 @@ ExportSurvey <- R6::R6Class(
       metadata <- metadata %>%
         mutate(type = self$get_field_type_overrides(variable, type))
 
-      # replace 'exceed' with 'x' in field names
+      # replace exceed with x in field names
       metadata <- metadata %>%
         mutate(variable = str_replace(variable, regex("exceed", ignore_case = TRUE), "x"))
 

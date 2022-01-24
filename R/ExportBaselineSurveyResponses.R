@@ -1,5 +1,11 @@
-#' ExportBaselineSurveyResponses - pipeline step for preparing export of
-#' baseline survey
+#' ExportBaselineSurveyResponses
+#'
+#' Prepare data export of baseline survey responses.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description ExportBaselineSurveyResponses class
+#' @importFrom R6 R6Class
 ExportBaselineSurveyResponses <- R6::R6Class(
   "ExportBaselineSurveyResponses",
   inherit = LoadBaselineSurveyResponses,

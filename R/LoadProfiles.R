@@ -1,4 +1,11 @@
-#' LoadProfiles - pipeline step for loading profiles
+#' LoadProfiles
+#'
+#' Load participant profiles from recruitment database.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description LoadProfiles class
+#' @importFrom R6 R6Class
 LoadProfiles <- R6::R6Class(
   "LoadProfiles",
   inherit = exceedapi::Step,

@@ -1,4 +1,11 @@
-#' LoadPostcodes - load postcodes data from arcgis
+#' LoadPostcodes
+#'
+#' Load postcodes to CCG and LSOA mapping from ArcGIS.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description LoadPostcodes class
+#' @importFrom R6 R6Class
 LoadPostcodes <- R6::R6Class(
   "LoadPostcodes",
   inherit = exceedapi::Step,

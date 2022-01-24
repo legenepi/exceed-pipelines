@@ -1,5 +1,11 @@
-#' MergeResearchProfessionalCollectedResponses - pipeline step for merging
-#' responses collected by research professionals for baseline questionnaire
+#' MergeResearchProfessionalCollectedResponses
+#'
+#' Merge responses collected by research professionals.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description MergeResearchProfessionalCollectedResponses class
+#' @importFrom R6 R6Class
 MergeResearchProfessionalCollectedResponses <- R6::R6Class(
   "MergeResearchProfessionalCollectedResponses",
   inherit = LoadResearchProfessionalCollectedResponses,

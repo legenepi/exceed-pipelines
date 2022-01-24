@@ -1,10 +1,17 @@
-#' ExportTable - generic export of a single table
+#' ExportTable
+#'
+#' Generic export of a single table.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description ExportTable class
+#' @importFrom R6 R6Class
 ExportTable <- R6::R6Class(
   "ExportTable",
   inherit = exceedapi::Step,
 
   public = list(
-    #' get field names
+    # get field names
     get_fields = function(exclude = FALSE) {
       map(self$args$fields, ~ {
         field_exclude <- .x$exclude
@@ -41,7 +48,7 @@ ExportTable <- R6::R6Class(
       min(study_id) >= min(study_id_range) & max(study_id) <= max(study_id_range)
     },
 
-    #' add any shared metadata from config
+    # add any shared metadata from config
     add_shared_metadata = function(metadata) {
       for (field in self$args$parent$config$metadata$fields) {
         metadata <- metadata %>%
@@ -62,7 +69,7 @@ ExportTable <- R6::R6Class(
         }, .cols = c(everything(), -STUDY_ID))
     },
 
-    #' field type overrides
+    # field type overrides
     get_field_type_overrides = function(name, type) {
       if (is.null(self$args$fields))
         return(type)
@@ -152,7 +159,7 @@ ExportTable <- R6::R6Class(
       )
     },
 
-    #' write metadata to file
+    # write metadata to file
     write_metadata = function(metadata, ...) {
       self$args$parent$write_csv(
         metadata %>%

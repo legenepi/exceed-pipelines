@@ -1,5 +1,11 @@
-#' LoadSurveyResponses - pipeline step for loading survey responses from any
-#' questionnaire.
+#' LoadSurveyResponses
+#'
+#' Load survey responses from REDCap questionnaires.
+#'
+#' @docType class
+#' @format An R6 class object.
+#' @description LoadSurveyResponses class
+#' @importFrom R6 R6Class
 LoadSurveyResponses <- R6::R6Class(
   "LoadSurveyResponses",
   inherit = exceedapi::Step,
@@ -44,7 +50,7 @@ LoadSurveyResponses <- R6::R6Class(
       private$apply_steps(responses, .collect)
     },
 
-    #' load responses from a questionnaire
+    # load responses from a questionnaire
     get_responses = function(project, .collect, ...) {
       self$logger$info("loading responses project=%s", project)
 
