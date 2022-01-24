@@ -1,4 +1,10 @@
-# exceed-pipelines
+# exceed.pipelines <a href="https://data.exceed.le.ac.uk/docs/exceedapi"><img src="man/figures/logo.png" align="right" height="139" /></a>
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/altaf-ali/exceed.pipelines/workflows/R-CMD-check/badge.svg)](https://github.com/altaf-ali/exceed.pipelines/actions)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Codecov test coverage](https://codecov.io/gh/altaf-ali/exceed.pipelines/branch/main/graph/badge.svg)](https://app.codecov.io/gh/altaf-ali/exceed.pipelines?branch=main)
+<!-- badges: end -->
 
 The pipeline interface is designed to allow writing and sharing of reusable
 code and minimizing the duplication of effort.

@@ -50,7 +50,3 @@ vignettes/*.pdf
 *.xls
 *.xlsx
 
-docs
-R
-man
-NAMESPACE

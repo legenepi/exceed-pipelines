@@ -1,13 +1,23 @@
 Package: exceed.pipelines
+Title: Reusable pipelines for the EXCEED study
 Version: 0.1.0
-RoxygenNote: 7.1.1
-Encoding: UTF-8
-Description: EXCEED API pipelines
-License: MIT + file LICENSE
 Authors@R: 
     person(given = "Altaf",
            family = "Ali",
            role = c("aut", "cre"),
-           email = "altaf.ali@leicester.ac.uk")
+           email = "altaf.ali@leicester.ac.uk",
+           comment = c(ORCID = "0000-0002-7227-8947")
+           )
+Description: This package provides reusable pipelines for the EXCEED study.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
 Imports: 
-    exceedapi
+    here,
+    magrittr,
+    R6
+Suggests: 
+    covr,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

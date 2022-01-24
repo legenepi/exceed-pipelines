@@ -1,0 +1,199 @@
+#' ExportTable - generic export of a single table
+ExportTable <- R6::R6Class(
+  "ExportTable",
+  inherit = exceedapi::Step,
+
+  public = list(
+    #' get field names
+    get_fields = function(exclude = FALSE) {
+      map(self$args$fields, ~ {
+        field_exclude <- .x$exclude
+        if (is.null(field_exclude))
+          field_exclude <- FALSE
+        if (field_exclude == exclude)
+          .x$name
+      }) %>%
+        unlist()
+    },
+
+    alert_warning = function(message, success, ...) {
+      args <- c(...)
+      alert_func <- ifelse(success, cli::cli_alert_success, cli::cli_alert_warning)
+      alert_func(message)
+      if (!success & !is.null(args))
+        alert_func(args)
+    },
+
+    alert_danger = function(message, success, ...) {
+      args <- c(...)
+      alert_func <- ifelse(success, cli::cli_alert_success, cli::cli_alert_danger)
+      alert_func(message)
+      if (!success & !is.null(args))
+        alert_func(args)
+    },
+
+    check_study_id_range = function(study_id) {
+      fields <- self$args$parent$config$metadata$fields
+      fields <- fields %>%
+        set_names(map(fields, ~ .$name))
+
+      study_id_range <- unlist(fields$STUDY_ID$range)
+      min(study_id) >= min(study_id_range) & max(study_id) <= max(study_id_range)
+    },
+
+    #' add any shared metadata from config
+    add_shared_metadata = function(metadata) {
+      for (field in self$args$parent$config$metadata$fields) {
+        metadata <- metadata %>%
+          add_row(
+            variable = field$name,
+            description = field$description,
+            type = field$type,
+            .before = field$position
+          )
+      }
+      return(metadata)
+    },
+
+    add_prefix = function(dataset) {
+      dataset %>%
+        rename_with(function(col) {
+          paste(self$args$prefix, col, sep = "_")
+        }, .cols = c(everything(), -STUDY_ID))
+    },
+
+    #' field type overrides
+    get_field_type_overrides = function(name, type) {
+      if (is.null(self$args$fields))
+        return(type)
+
+      field_types <- self$args$fields %>%
+        map_dfr(~ tibble(name = .x$name, type = .x$type))
+
+      if (!("type" %in% names(field_types)))
+        return(type)
+
+      field_types <- field_types %>%
+        deframe %>%
+        as.list()
+
+      map2(name, type, function(.x, .y) {
+        index = str_which(.x, names(field_types))
+        if (length(index))
+          return(field_types[[index]])
+        else
+          return(.y)
+      }) %>%
+        unlist()
+    },
+
+    verify_table = function(metadata, dataset) {
+      cli::cli_h3("Verifying table")
+
+      missing_vars <- length(setdiff(metadata$variable, names(dataset)))
+      self$alert_danger(
+        glue::glue("{missing_vars} missing variables"),
+        missing_vars == 0
+      )
+
+      factors <- dataset %>%
+        select(where(is.factor)) %>%
+        ncol()
+      self$alert_danger(glue::glue("{factors} factors"), factors == 0)
+
+      character_fields <- metadata %>%
+        filter(type == "CHARACTER") %>%
+        pull(variable)
+      character_fields_count <- length(character_fields)
+
+      self$alert_warning(
+        glue::glue("{character_fields_count} CHARACTER fields in metadata"),
+        character_fields_count == 0,
+        paste(character_fields, collapse = " ")
+      )
+
+      character_fields <- dataset %>%
+        select(where(is.character)) %>%
+        names()
+      character_fields_count <- length(character_fields)
+
+      self$alert_warning(
+        glue::glue("{character_fields_count} CHARACTER fields in dataset"),
+        character_fields_count == 0
+      )
+
+      study_id_var <- "STUDY_ID"
+      self$alert_danger(
+        glue::glue("{study_id_var} in metadata and dataset"),
+        study_id_var %in% names(dataset) & study_id_var %in% metadata$variable
+      )
+
+      study_id_dulicates <- dataset %>%
+        group_by(across(study_id_var)) %>%
+        tally() %>%
+        filter(n > 1) %>%
+        nrow()
+      self$alert_danger(
+        glue::glue("{study_id_var} with {study_id_dulicates} duplicates"),
+        study_id_dulicates == 0
+      )
+
+      study_id <- dataset[[study_id_var]]
+      study_id_na <- sum(is.na(study_id))
+      self$alert_danger(
+        glue::glue("{study_id_var} with {study_id_na} NAs"),
+        study_id_na == 0
+      )
+
+      study_id_range <- paste(range(study_id), collapse = " - ")
+      self$alert_danger(
+        glue::glue("{study_id_var} range: {study_id_range}"),
+        self$check_study_id_range(study_id)
+      )
+    },
+
+    #' write metadata to file
+    write_metadata = function(metadata, ...) {
+      self$args$parent$write_csv(
+        metadata %>%
+          select(variable, description, type, value, label) %>%
+          rename_with(str_to_upper),
+        ...
+      )
+    },
+
+    write_dataset = function(dataset, ...) {
+      duplicates <- dataset %>%
+        group_by(STUDY_ID) %>%
+        tally() %>%
+        filter(n > 1)
+
+      if (nrow(duplicates)) {
+        cli::cli_alert_danger("exported dataset includes duplicate records")
+        print(duplicates)
+      }
+
+      self$args$parent$write_csv(dataset, ...)
+    },
+
+    write_table = function(metadata, dataset) {
+      self$verify_table(metadata, dataset)
+
+      cli::cli_h3("Saving table")
+      metadata_filename <- self$write_metadata(
+        metadata,
+        paste(self$args$name, "metadata", sep = "_")
+      )
+      dataset_filename <- self$write_dataset(dataset, self$args$name)
+
+      tibble(
+        table = self$args$name,
+        variables = n_distinct(metadata$variable),
+        observations = nrow(dataset),
+        dataset = dataset_filename,
+        metadata = metadata_filename
+      )
+    }
+  )
+)
+

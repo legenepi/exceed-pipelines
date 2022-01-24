@@ -1,10 +1,71 @@
+url: https://data.exceed.le.ac.uk/docs/exceedapi
+
+template:
+  bootstrap: 5
+
 development:
   mode: devel
 
 reference:
-
-- title: Classes
-  contents:
-  - NormalizeDateTime
+  - title: Antibody Test
+    contents:
+    - LoadAntibodyTestDataset
+    - LoadAntibodyTestResults
+    - PrepareAntibodyTestReport
+  - title: BREATHE
+    contents:
+    - BreatheExport
+  - title: Exports
+    contents:
+      - ExportAntibodyTestResults
+      - ExportBaselineSurveyResponses
+      - ExportOccupations
+      - ExportPhenotypes
+      - ExportSurvey
+      - ExportTable
+      - GenericExport
+  - title: Electronic Health Records
+    contents:
+    - LoadPrimaryCarePatients
+  - title: Examples
+    contents:
+      - LoadDefaultDataset
+      - LoadFaithful
+      - LoadIris
+      - LoadMotorTrendCars
+  - title: Geospatial
+    contents:
+    - LoadONSBoundaries
+    - LoadPostcodes
+    - LookupPostcodes
+  - title: Identities
+    contents:
+    - LoadIdentities
+    - MergeUUIDs
+  - title: Miscellaneous
+    contents:
+    - CachedCSV
+    - CachedDownload
+    - FileDownload
+  - title: Phenotypes
+    contents:
+    - LoadPhenotypes
+  - title: Profiles
+    contents:
+    - CalculateAge
+    - ConvertToCentimeters
+    - ConvertToKilograms
+    - GroupEthnicities
+    - LoadProfiles
+    - LoadDemographicProfiles
+  - title: REDCap
+    contents:
+    - LoadAntibodyTestSurveyResponses
+    - LoadBaselineSurveyResponses
+    - LoadCovidSurveyResponses
+    - LoadResearchProfessionalCollectedResponses
+    - LoadSurveyMetadata
+    - LoadSurveyResponses
+    - MergeResearchProfessionalCollectedResponses
 
 
