@@ -18,7 +18,7 @@ LoadONSBoundaries <- R6::R6Class(
     ),
 
     build_url = function(key) {
-      dataset <- pluck(private$dataset, key)
+      dataset <- purrr::pluck(private$dataset, key)
       glue::glue(
         "https://opendata.arcgis.com/api/v3/datasets/{dataset}/downloads/data?format=shp&spatialRefId=27700"
       )
@@ -31,7 +31,7 @@ LoadONSBoundaries <- R6::R6Class(
         mutate(suffix = fs::path_ext(filename)) %>%
         filter(suffix == "shp") %>%
         select(filename) %>%
-        first()
+        dplyr::first()
 
       exdir <- fs::path_temp()
       zip::unzip(filename, exdir = exdir)

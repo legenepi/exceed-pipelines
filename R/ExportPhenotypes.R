@@ -38,17 +38,17 @@ ExportPhenotypes <- R6::R6Class(
         add_step(LoadPhenotypes) %>%
         add_step(MergeUUIDs, domain = "exceed", by = "exceed_id") %>%
         collect() %>%
-        left_join(self$args$identities, by = "uuid") %>%
+        dplyr::left_join(self$args$identities, by = "uuid") %>%
         filter(!is.na(uuid) & !is.na(STUDY_ID)) %>%
-        group_by(STUDY_ID) %>%
-        filter(row_number() == 1)  %>%
-        ungroup() %>%
+        dplyr::group_by(STUDY_ID) %>%
+        filter(dplyr::row_number() == 1)  %>%
+        dplyr::ungroup() %>%
         relocate(STUDY_ID) %>%
         select(-uuid, -fields_exclude)
 
       doubles <- metadata %>%
         filter(type == "DOUBLE") %>%
-        pull("variable")
+        dplyr::pull("variable")
 
       dataset %>%
         self$add_prefix() %>%

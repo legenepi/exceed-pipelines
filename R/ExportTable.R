@@ -64,7 +64,7 @@ ExportTable <- R6::R6Class(
 
     add_prefix = function(dataset) {
       dataset %>%
-        rename_with(function(col) {
+        dplyr::rename_with(function(col) {
           paste(self$args$prefix, col, sep = "_")
         }, .cols = c(everything(), -STUDY_ID))
     },
@@ -75,7 +75,7 @@ ExportTable <- R6::R6Class(
         return(type)
 
       field_types <- self$args$fields %>%
-        map_dfr(~ tibble(name = .x$name, type = .x$type))
+        purrr::map_dfr(~ tibble(name = .x$name, type = .x$type))
 
       if (!("type" %in% names(field_types)))
         return(type)
@@ -110,7 +110,7 @@ ExportTable <- R6::R6Class(
 
       character_fields <- metadata %>%
         filter(type == "CHARACTER") %>%
-        pull(variable)
+        dplyr::pull(variable)
       character_fields_count <- length(character_fields)
 
       self$alert_warning(
@@ -136,7 +136,7 @@ ExportTable <- R6::R6Class(
       )
 
       study_id_dulicates <- dataset %>%
-        group_by(across(study_id_var)) %>%
+        dplyr::group_by(across(study_id_var)) %>%
         tally() %>%
         filter(n > 1) %>%
         nrow()
@@ -164,14 +164,14 @@ ExportTable <- R6::R6Class(
       self$args$parent$write_csv(
         metadata %>%
           select(variable, description, type, value, label) %>%
-          rename_with(str_to_upper),
+          dplyr::rename_with(str_to_upper),
         ...
       )
     },
 
     write_dataset = function(dataset, ...) {
       duplicates <- dataset %>%
-        group_by(STUDY_ID) %>%
+        dplyr::group_by(STUDY_ID) %>%
         tally() %>%
         filter(n > 1)
 
@@ -195,7 +195,7 @@ ExportTable <- R6::R6Class(
 
       tibble(
         table = self$args$name,
-        variables = n_distinct(metadata$variable),
+        variables = dplyr::n_distinct(metadata$variable),
         observations = nrow(dataset),
         dataset = dataset_filename,
         metadata = metadata_filename

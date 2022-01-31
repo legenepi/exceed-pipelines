@@ -17,27 +17,27 @@ LoadDemographicProfiles <- R6::R6Class(
   inherit = exceedapi::Step,
 
   private = list(
-    coalesce = function(data, col, func = NULL, slice = slice_min) {
+    coalesce = function(data, col, func = NULL, slicer = dplyr::slice_min) {
       if (is.null(func))
         func <- function(.x) {
-          case_when(
-            n_distinct(.x) == 1 ~ .x
+          dplyr::case_when(
+            dplyr::n_distinct(.x) == 1 ~ .x
           )
         }
 
       data %>%
         filter(!is.na({{col}})) %>%
-        group_by(uuid) %>%
+        dplyr::group_by(uuid) %>%
         mutate(across({{col}}, func)) %>%
-        slice(order_by = {{col}}, with_ties = FALSE) %>%
+        slicer(order_by = {{col}}, with_ties = FALSE) %>%
         filter(!is.na({{col}})) %>%
-        distinct(across(c(uuid, {{col}})))
+        dplyr::distinct(across(c(uuid, {{col}})))
     },
 
     coalesce_date = function(data, col, threshold = Inf, ...) {
       private$coalesce(data, {{col}}, func = function(.x) {
-        case_when(
-          n_distinct(.x) == 1 | diff(range(.x)) <= threshold ~ .x
+        dplyr::case_when(
+          dplyr::n_distinct(.x) == 1 | diff(range(.x)) <= threshold ~ .x
         )},
         ...
       )
@@ -65,7 +65,7 @@ LoadDemographicProfiles <- R6::R6Class(
         postcode = primaryaddress__address__postcode,
         ...
       ) %>%
-        mutate(postcode = str_replace_all(postcode, " ", ""))
+        mutate(postcode = stringr::str_replace_all(postcode, " ", ""))
 
       postcode <- private$coalesce(profiles, postcode)
       deceased <- private$coalesce(profiles, deceased, any)
@@ -76,12 +76,12 @@ LoadDemographicProfiles <- R6::R6Class(
 
       profiles <- profiles %>%
         select(uuid, dob) %>%
-        left_join(deceased, by = "uuid") %>%
-        left_join(postcode, by = "uuid") %>%
-        left_join(consent, by = "uuid") %>%
-        left_join(consent_version, by = "uuid") %>%
-        left_join(consent_withdrawn, by = "uuid") %>%
-        left_join(consent_withdrawn_date, by = "uuid")
+        dplyr::left_join(deceased, by = "uuid") %>%
+        dplyr::left_join(postcode, by = "uuid") %>%
+        dplyr::left_join(consent, by = "uuid") %>%
+        dplyr::left_join(consent_version, by = "uuid") %>%
+        dplyr::left_join(consent_withdrawn, by = "uuid") %>%
+        dplyr::left_join(consent_withdrawn_date, by = "uuid")
 
       drop_withdrawn <- self$args$drop_withdrawn
 
@@ -128,13 +128,13 @@ LoadDemographicProfiles <- R6::R6Class(
           msoa = msoa11cd
         ) %>%
         .collect() %>%
-        mutate(postcode = str_replace_all(postcode, " ", ""))
+        mutate(postcode = stringr::str_replace_all(postcode, " ", ""))
     }
   ),
 
   public = list(
     transform = function(.data, .collect, ...) {
-      .collect <- partial(.collect, ...)
+      .collect <- purrr::partial(.collect, ...)
 
       profiles <- private$get_profiles(.collect)
       primarycare <- private$get_primarycare_data(.collect)
@@ -155,23 +155,23 @@ LoadDemographicProfiles <- R6::R6Class(
         sex
       )
 
-      dob <- bind_rows(profiles, baseline, rpcollected, primarycare) %>%
+      dob <- dplyr::bind_rows(profiles, baseline, rpcollected, primarycare) %>%
         private$coalesce_date(dob, threshold = lubridate::years(1))
 
-      sex <- bind_rows(baseline, rpcollected, primarycare) %>%
-        mutate(sex = fct_drop(sex)) %>%
+      sex <- dplyr::bind_rows(baseline, rpcollected, primarycare) %>%
+        mutate(sex = forcats::fct_drop(sex)) %>%
         private$coalesce(sex)
 
       ethnicity <- private$coalesce(baseline, ethnicity)
 
       profiles %>%
         select(-dob) %>%
-        distinct(uuid, .keep_all = TRUE) %>%
-        arrange(uuid) %>%
-        left_join(dob, by = "uuid") %>%
-        left_join(sex, by = "uuid") %>%
-        left_join(ethnicity, by = "uuid") %>%
-        left_join(postcodes, by = "postcode") %>%
+        dplyr::distinct(uuid, .keep_all = TRUE) %>%
+        dplyr::arrange(uuid) %>%
+        dplyr::left_join(dob, by = "uuid") %>%
+        dplyr::left_join(sex, by = "uuid") %>%
+        dplyr::left_join(ethnicity, by = "uuid") %>%
+        dplyr::left_join(postcodes, by = "postcode") %>%
         select(-postcode)
     }
   )

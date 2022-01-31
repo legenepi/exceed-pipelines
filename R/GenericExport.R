@@ -142,7 +142,7 @@ GenericExport <- R6::R6Class(
         select(uuid, deceased, scope = basicconsent__withdrawals__scope) %>%
         collect() %>%
         filter(scope == 3 | deceased == TRUE) %>%
-        left_join(identities, by = "uuid")
+        dplyr::left_join(identities, by = "uuid")
 
       identities <- identities %>%
         anti_join(exclusions, by = "uuid")
@@ -154,8 +154,8 @@ GenericExport <- R6::R6Class(
       cli::cli_h1("Exporting tables")
 
       tables <- tables %>%
-        discard(~ .$skip) %>%
-        map_dfr(~ {
+        purrr::discard(~ .$skip) %>%
+        purrr::map_dfr(~ {
           cli::cli_h2(.x$name)
           .x$args$name <- .x$name
           self$client$pipeline() %>%
@@ -292,7 +292,7 @@ GenericExport <- R6::R6Class(
           snapshot = self$client$snapshot,
           archive = self$archive %>%
             self$calulate_checksums() %>%
-            as_tibble(),
+            tibble::as_tibble(),
           files = files,
           tables = tables
         )

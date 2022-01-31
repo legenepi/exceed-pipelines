@@ -23,7 +23,7 @@ LoadProfiles <- R6::R6Class(
         .collect(profiles, ...)
 
       profiles %>%
-        left_join(postcodes, by = c("primaryaddress__address__postcode" = "query")) %>%
+        dplyr::left_join(postcodes, by = c("primaryaddress__address__postcode" = "query")) %>%
         select(-primaryaddress__address__postcode) %>%
         rename(primaryaddress__address__postcode = result_postcode)
     }

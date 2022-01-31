@@ -11,28 +11,28 @@ LoadAntibodyTestResults <- R6::R6Class(
   inherit = exceedapi::Step,
 
   private = list(
-    get_results = function() {
+    get_results = function(.refresh_cache = FALSE, ...) {
       results <- self$client$pipeline() %>%
         add_step(LoadAntibodyTestDataset, dataset = "results") %>%
-        collect()
+        collect(.refresh_cache = .refresh_cache)
 
       specimen_ids <- self$client$pipeline() %>%
         add_step(LoadAntibodyTestDataset, dataset = "specimen-ids") %>%
+        collect(.refresh_cache = .refresh_cache) %>%
         rename(
           specimenId = Tests_Sample_ID,
           subjectId = Tests_External_User_ID
-        ) %>%
-        collect()
+        )
 
       results %>%
         select(-subjectId) %>%
-        left_join(specimen_ids, by = "specimenId")
+        dplyr::left_join(specimen_ids, by = "specimenId")
     }
   ),
 
   public = list(
     transform = function(...) {
-      private$get_results()
+      private$get_results(...)
     }
   )
 )

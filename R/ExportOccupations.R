@@ -42,19 +42,19 @@ ExportOccupations <- R6::R6Class(
         select(id, uuid, !!field_map) %>%
         collect() %>%
         mutate(across(where(is.logical), as.numeric)) %>%
-        mutate(across(fields, ~ na_if(str_replace_all(., "\\}|nan", ""), ""))) %>%
+        mutate(across(fields, ~ na_if(stringr::str_replace_all(., "\\}|nan", ""), ""))) %>%
         filter(if_any(c(everything(), -id, -uuid), ~ !is.na(.x))) %>%
-        left_join(self$args$identities, by = "uuid") %>%
+        dplyr::left_join(self$args$identities, by = "uuid") %>%
         filter(!is.na(uuid) & !is.na(STUDY_ID)) %>%
-        group_by(STUDY_ID) %>%
-        arrange(STUDY_ID, id) %>%
-        filter(row_number() == n())  %>%
-        ungroup() %>%
+        dplyr::group_by(STUDY_ID) %>%
+        dplyr::arrange(STUDY_ID, id) %>%
+        filter(dplyr::row_number() == n())  %>%
+        dplyr::ungroup() %>%
         relocate(STUDY_ID) %>%
         select(-c(id, uuid))
 
       dataset %>%
-        rename_with(~ str_replace(., "occupation__", "")) %>%
+        dplyr::rename_with(~ str_replace(., "occupation__", "")) %>%
         self$add_prefix()
     }
   )

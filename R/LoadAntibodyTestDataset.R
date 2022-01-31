@@ -21,12 +21,12 @@ LoadAntibodyTestDataset <- R6::R6Class(
         quiet = self$quiet
       ) %>%
         collect() %>%
-        pluck("id") %>%
+        purrr::pluck("id") %>%
         purrr::map(function(id) {
           self$client$datastore(source = private$.source, dataset = dataset, id = id) %>%
             collect()
         }) %>%
-        bind_rows()
+        dplyr::bind_rows()
     }
   ),
 

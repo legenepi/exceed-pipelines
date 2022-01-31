@@ -21,11 +21,11 @@ CalculateAge <- R6::R6Class(
     },
 
     calculate_age = function(.data, from, to, into, unit, ...) {
-      from <- pull(.data, from)
+      from <- dplyr::pull(.data, from)
       if (is.null(to))
         to <- lubridate::today()
       else
-        to <- pull(.data, to)
+        to <- dplyr::pull(.data, to)
 
       to <- private$as_date(to)
       from <- private$as_date(from)

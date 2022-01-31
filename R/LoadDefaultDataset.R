@@ -12,7 +12,7 @@ LoadDefaultDataset <- R6::R6Class(
 
   public = list(
     transform = function(...) {
-      dplyr::as_tibble(self$args$dataset)
+      tibble::as_tibble(self$args$dataset)
     }
   )
 )

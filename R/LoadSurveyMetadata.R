@@ -14,16 +14,19 @@ LoadSurveyMetadata <- R6::R6Class(
     # strip html tags
     strip_tags = function(x) {
       x %>%
-        str_replace_all("<.*?>", " ") %>%
-        str_squish()
+        stringr::str_replace_all("<.*?>", " ") %>%
+        stringr::str_squish()
     },
 
     # get metadata from a questionnaire
-    get_metadata = function() {
-      self$logger$info("loading metadata survey=%s", self$args$slug)
+    get_metadata = function(slug) {
+      self$logger$info("loading metadata survey=%s", slug)
 
-      metadata <- self$client$redcap(project = self$args$slug) %>%
-        metadata() %>%
+      metadata <- self$client$redcap(project = slug) %>%
+        metadata()
+
+      info <- metadata$info
+      metadata <- metadata %>%
         collect()
 
       if (!is.null(self$args$field_types)) {
@@ -57,18 +60,18 @@ LoadSurveyMetadata <- R6::R6Class(
         unnest(field_choices) %>%
         rename(field_value = id, field_value_label = label) %>%
         mutate(
-          field_name = case_when(
+          field_basename = field_name,
+          field_name = dplyr::case_when(
             field_type == "checkbox" ~ paste(
               field_name, field_value, sep = "___"
             ),
             TRUE ~ field_name
-          ),
-          field_basename = field_name
+          )
         )
 
       metadata <- metadata %>%
         mutate(
-          field_value = case_when(
+          field_value = dplyr::case_when(
             field_type == "checkbox" ~ 1,
             TRUE ~ field_value
           )
@@ -78,13 +81,19 @@ LoadSurveyMetadata <- R6::R6Class(
           field_basename,
           field_type,
           field_label,
+          field_note,
           field_value,
           field_value_label
         )
 
       metadata %>%
         mutate(
+          project = slug,
+          project_id = info$project_id,
+          project_title = info$project_title,
+          project_creation_time = info$creation_time,
           field_label = private$strip_tags(field_label),
+          field_note = private$strip_tags(field_note),
           field_value_label = private$strip_tags(field_value_label)
         )
     }
@@ -92,7 +101,14 @@ LoadSurveyMetadata <- R6::R6Class(
 
   public = list(
     transform = function(...) {
-      private$get_metadata()
+      pb <- self$progress_bar(total = length(self$args$slug))
+
+      purrr::map_dfr(self$args$slug, function(slug) {
+        pb$message(glue::glue("{cli::symbol$bullet} {slug} (metadata)"))
+        metadata <- private$get_metadata(slug)
+        pb$tick()
+        return(metadata)
+      })
     }
   )
 )

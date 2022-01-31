@@ -13,8 +13,8 @@ PrepareAntibodyTestReport <- R6::R6Class(
   private = list(
     resolve_duplicates = function(.x) {
       .x <- purrr::discard(.x, is.na)
-      if (n_distinct(.x) == 1)
-        return(first(.x))
+      if (dplyr::n_distinct(.x) == 1)
+        return(dplyr::first(.x))
       else
         return(NA)
     },
@@ -29,9 +29,9 @@ PrepareAntibodyTestReport <- R6::R6Class(
         collect()
 
       profiles %>%
-        group_by(uuid) %>%
+        dplyr::group_by(uuid) %>%
         mutate(across(c(postcode), private$resolve_duplicates)) %>%
-        distinct(uuid, postcode)
+        dplyr::distinct(uuid, postcode)
     },
 
     lookup_postcodes = function(postcodes) {
@@ -66,9 +66,9 @@ PrepareAntibodyTestReport <- R6::R6Class(
 
       baseline %>%
         mutate(ageGroup = private$calculate_age_group(age)) %>%
-        group_by(uuid) %>%
+        dplyr::group_by(uuid) %>%
         mutate(across(c(ageGroup, gender, ethnicity), private$resolve_duplicates)) %>%
-        distinct(uuid, ageGroup, gender, ethnicity)
+        dplyr::distinct(uuid, ageGroup, gender, ethnicity)
     },
 
     get_results = function() {
@@ -83,13 +83,13 @@ PrepareAntibodyTestReport <- R6::R6Class(
       baseline <- private$get_baseline_responses()
 
       results <- results %>%
-        left_join(profiles, by = "uuid") %>%
-        left_join(baseline, by = "uuid")
+        dplyr::left_join(profiles, by = "uuid") %>%
+        dplyr::left_join(baseline, by = "uuid")
 
       postcodes <- private$lookup_postcodes(results$postcode)
 
       results %>%
-        left_join(postcodes, by = "postcode") %>%
+        dplyr::left_join(postcodes, by = "postcode") %>%
         select(-postcode) %>%
         rename(postcode = postcode_outcode)
     },

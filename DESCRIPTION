@@ -1,6 +1,6 @@
 Package: exceed.pipelines
 Title: Reusable pipelines for the EXCEED study
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: 
     person(given = "Altaf",
            family = "Ali",
@@ -10,6 +10,8 @@ Authors@R:
            )
 Description: This package provides reusable pipelines for the EXCEED study.
 License: MIT + file LICENSE
+URL: https://github.com/legenepi/exceed-pipelines
+BugReports: https://github.com/legenepi/exceed-pipelines/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2

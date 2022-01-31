@@ -16,7 +16,7 @@ GroupEthnicities <- R6::R6Class(
         mutate(
           across(
             from,
-            ~ fct_collapse(
+            ~ forcats::fct_collapse(
               .,
               White = c("White British", "Irish", "Any other white background"),
               Asian = c("Asian or Asian British", "Indian", "Pakistani", "Bangladeshi", "Any other Asian background"),

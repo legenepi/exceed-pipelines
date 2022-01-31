@@ -36,7 +36,7 @@ MergeResearchProfessionalCollectedResponses <- R6::R6Class(
         .collect()
 
       .data <- .data %>%
-        left_join(rpq, by = by, suffix = c("", "_rpq"))
+        dplyr::left_join(rpq, by = by, suffix = c("", "_rpq"))
 
       if (is.null(self$args$merge))
         return(.data)

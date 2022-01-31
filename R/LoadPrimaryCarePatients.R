@@ -25,10 +25,10 @@ LoadPrimaryCarePatients <- R6::R6Class(
         .collect(...)
 
       patient %>%
-        left_join(patient_practice, by = c(id = "patient_id")) %>%
+        dplyr::left_join(patient_practice, by = c(id = "patient_id")) %>%
         mutate(
           pseudo_dob = lubridate::ymd(pseudo_dob),
-          gender = fct_recode(gender, Female = "F", Male = "M")
+          gender = forcats::fct_recode(gender, Female = "F", Male = "M")
         )
     }
   )

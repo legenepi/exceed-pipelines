@@ -20,7 +20,7 @@ LoadPhenotypes <- R6::R6Class(
         dataset = private$.dataset
       ) %>%
         collect() %>%
-        pluck("id")
+        purrr::pluck("id")
 
       self$client$datastore(
         source = private$.source,

@@ -21,23 +21,23 @@ LoadPostcodes <- R6::R6Class(
         add_step(
           CachedCSV,
           key = key,
-          url = pluck(private$urls, key),
+          url = purrr::pluck(private$urls, key),
           show_col_types = self$args$show_col_types
         ) %>%
         .collect() %>%
-        rename_with(str_to_lower)
+        dplyr::rename_with(stringr::str_to_lower)
     }
   ),
 
   public = list(
     transform = function(.data, .collect, ...) {
-      .collect <- partial(.collect, ...)
+      .collect <- purrr::partial(.collect, ...)
 
       postcodes <- private$load_dataset("postcodes", .collect)
       lsoa_to_ccg <- private$load_dataset("lsoa_to_ccg", .collect)
 
       postcodes <- postcodes %>%
-        left_join(lsoa_to_ccg, by = "lsoa11cd") %>%
+        dplyr::left_join(lsoa_to_ccg, by = "lsoa11cd") %>%
         private$apply_steps(.collect)
 
       rm(lsoa_to_ccg)

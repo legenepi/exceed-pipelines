@@ -18,12 +18,12 @@ LoadIdentities <- R6::R6Class(
         src_tbls()
 
       identities <- domains %>%
-        str_subset(self$args$domain) %>%
+        stringr::str_subset(self$args$domain) %>%
         purrr::map(function(domain) {
           self$client$identities(domain = domain) %>%
             .collect()
         }) %>%
-        bind_rows()
+        dplyr::bind_rows()
     }
   ),
 

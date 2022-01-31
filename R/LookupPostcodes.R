@@ -14,9 +14,9 @@ LookupPostcodes <- R6::R6Class(
 
     make_tibble = function(x) {
       x %>%
-        discard(is.null) %>%
+        purrr::discard(is.null) %>%
         data.frame() %>%
-        as_tibble()
+        tibble::as_tibble()
     },
 
     lookup_postcodes_batch = function(postcodes) {
@@ -39,13 +39,13 @@ LookupPostcodes <- R6::R6Class(
 
       response %>%
         httr::content() %>%
-        pluck("result") %>%
-        map_dfr(~ {
+        purrr::pluck("result") %>%
+        purrr::map_dfr(~ {
           .x$result$codes <- NULL #private$make_tibble(.x$result$codes)
-          .x$result <- discard(.x$result, is.null)
+          .x$result <- purrr::discard(.x$result, is.null)
           private$make_tibble(.x)
         }) %>%
-        rename_all(~ str_replace_all(., "\\.", "_"))
+        dplyr::rename_all(~ stringr::str_replace_all(., "\\.", "_"))
     },
 
     lookup_postcodes = function(.data, batch_size = 100, ...) {
@@ -55,15 +55,15 @@ LookupPostcodes <- R6::R6Class(
       )
 
       .data %>%
-        select(self$args$by) %>%
-        mutate(batch = ceiling(row_number() / batch_size)) %>%
-        group_by(batch) %>%
-        group_map(function(.x, .y) {
+        dplyr::select(self$args$by) %>%
+        dplyr::mutate(batch = ceiling(dplyr::row_number() / batch_size)) %>%
+        dplyr::group_by(batch) %>%
+        dplyr::group_map(function(.x, .y) {
           pb$tick(len = nrow(.x))
-          private$lookup_postcodes_batch(postcodes = pull(.x, self$args$by))
+          private$lookup_postcodes_batch(postcodes = dplyr::pull(.x, self$args$by))
         }) %>%
-        bind_rows() %>%
-        distinct(query, .keep_all = TRUE)
+        dplyr::bind_rows() %>%
+        dplyr::distinct(query, .keep_all = TRUE)
     }
   ),
 

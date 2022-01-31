@@ -37,7 +37,7 @@ ExportAntibodyTestResults <- R6::R6Class(
         select(uuid, fields) %>%
         collect() %>%
         mutate(specimenProcessedDate = lubridate::date(specimenProcessedDate)) %>%
-        left_join(self$args$identities, by = "uuid") %>%
+        dplyr::left_join(self$args$identities, by = "uuid") %>%
         filter(!is.na(uuid) & !is.na(STUDY_ID)) %>%
         relocate(STUDY_ID) %>%
         select(-uuid)

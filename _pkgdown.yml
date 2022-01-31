@@ -1,4 +1,4 @@
-url: https://github.com/legenepi/exceed-pipelines
+url: https://legenepi.github.io/exceed-pipelines
 
 template:
   bootstrap: 5
@@ -15,6 +15,9 @@ reference:
   - title: BREATHE
     contents:
     - BreatheExport
+  - title: Datastore
+    contents:
+    - LoadDatastoreTable
   - title: Exports
     contents:
       - ExportAntibodyTestResults

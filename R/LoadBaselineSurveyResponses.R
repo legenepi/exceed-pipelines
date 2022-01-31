@@ -36,9 +36,9 @@ LoadBaselineSurveyResponses <- R6::R6Class(
         by = "day"
       )
 
-      mutate(
+      dplyr::mutate(
         .data,
-        across(.vars, ~ dplyr::case_when(. %in% date_range ~ .))
+        dplyr::across(.vars, ~ dplyr::case_when(. %in% date_range ~ .))
       )
     },
 

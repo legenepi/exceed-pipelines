@@ -62,19 +62,19 @@ ExportSurvey <- R6::R6Class(
 
       # replace exceed with x in field names
       metadata <- metadata %>%
-        mutate(variable = str_replace(variable, regex("exceed", ignore_case = TRUE), "x"))
+        mutate(variable = str_replace(variable, stringr::regex("exceed", ignore_case = TRUE), "x"))
 
       # build field type map
       field_map <- self$args$parent$config$redcap$fields %>%
         map(~ {
           intersect(.x$input, metadata$type)
         }) %>%
-        set_names(map(self$args$parent$config$redcap$fields, pluck("type")))
+        set_names(map(self$args$parent$config$redcap$fields, purrr::pluck("type")))
 
       # map field types to (database compatible) export types
       metadata <- metadata %>%
         mutate(
-          type = fct_collapse(type, !!!field_map),
+          type = forcats::fct_collapse(type, !!!field_map),
           variable = paste(
             self$args$prefix,
             variable,
@@ -88,22 +88,22 @@ ExportSurvey <- R6::R6Class(
     prepare_dataset = function(metadata) {
       fields <- metadata %>%
         filter(!is.na(field)) %>%
-        distinct(field) %>%
-        pull()
+        dplyr::distinct(field) %>%
+        dplyr::pull()
 
       dataset <- self$client$pipeline() %>%
         add_step(!!self$args$exporter) %>%
         add_step(MergeUUIDs, domain = "exceed", by = "exceed_id") %>%
         collect() %>%
         select(uuid, timestamp, complete, fields) %>%
-        rename_with(~ str_replace(., regex("exceed", ignore_case = TRUE), "x")) %>%
+        dplyr::rename_with(~ str_replace(., stringr::regex("exceed", ignore_case = TRUE), "x")) %>%
         filter(complete == 2, !is.na(uuid)) %>%
-        left_join(self$args$identities, by = "uuid") %>%
+        dplyr::left_join(self$args$identities, by = "uuid") %>%
         filter(!is.na(uuid) & !is.na(STUDY_ID)) %>%
-        group_by(STUDY_ID) %>%
-        arrange(STUDY_ID, timestamp) %>%
-        filter(row_number() == 1)  %>%
-        ungroup() %>%
+        dplyr::group_by(STUDY_ID) %>%
+        dplyr::arrange(STUDY_ID, timestamp) %>%
+        filter(dplyr::row_number() == 1)  %>%
+        dplyr::ungroup() %>%
         relocate(STUDY_ID) %>%
         select(-c(uuid, timestamp, complete))
 
