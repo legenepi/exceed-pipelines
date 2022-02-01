@@ -18,11 +18,11 @@ LoadAntibodyTestResults <- R6::R6Class(
 
       specimen_ids <- self$client$pipeline() %>%
         add_step(LoadAntibodyTestDataset, dataset = "specimen-ids") %>%
-        collect(.refresh_cache = .refresh_cache) %>%
         rename(
           specimenId = Tests_Sample_ID,
           subjectId = Tests_External_User_ID
-        )
+        ) %>%
+        collect(.refresh_cache = .refresh_cache)
 
       results %>%
         select(-subjectId) %>%
