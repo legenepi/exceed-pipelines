@@ -87,35 +87,18 @@
 <div class="section level2">
 <h2 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h2>
-<p>By default, <code>exceedapi</code> will search for reusable steps under a subdirectory called <code>R</code> in the current working directory. This is similar to how R packages load all <code>R/*.R</code> files in the package directory, but pipelines go one step further. Pipelines can also load files under nested subdirectories of <code>R</code> (e.g. <code>R/*/.../*.R</code>). You can also override this behavior and provide a search path for pipelines. For example, let’s assume that you want <code>exceedapi</code> to load steps from <code>exceed-pipelines</code> repository.</p>
-<ol style="list-style-type: decimal">
-<li>First clone the repository.</li>
-</ol>
-<pre class="{bash}"><code>$ git clone git@github.com:legenepi/exceed-pipelines.git ~/exceed/pipelines
-
-# -- or --
-
-$ git clone https://github.com/legenepi/exceed-pipelines.git ~/exceed/pipelines</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>Next, create a configuration that tells the <code>exceedapi</code> where to look for pipeline steps. The configuration file must contain at least one directory under <code>pipeline -&gt; search</code> option:</li>
-</ol>
-<pre class="{yaml}"><code>pipeline:
-  search:
-    - ~/exceed/pipelines/steps</code></pre>
-<ol start="3" style="list-style-type: decimal">
-<li>Finally, decide whether you want a per-project configuration file or a global one.</li>
-</ol>
+<p>By default, <code>exceedapi</code> will search for reusable steps from the <a href="https://github.com/legenepi/exceed-pipelines" class="external-link">legenepi/exceed-pipelines</a> repository on github. Pipelines can also loaded from a local directory or from any other github repo. For example, if you want to load steps from the a repo named <code>skyfall</code> under the account <code>bond</code>, you would create a .yaml config file with the following:</p>
+<pre class="{yaml}"><code><span class="va">pipeline</span><span class="op">:</span>
+  <span class="va">search</span><span class="op">:</span>
+  <span class="op">-</span> <span class="va">bond</span><span class="op">/</span><span class="va">skyfall</span>
+  <span class="op">-</span> <span class="va">legenepi</span><span class="op">/</span><span class="va">exceed</span><span class="op">-</span><span class="va">pipelines</span><span class="op">@</span><span class="va">main</span><span class="op">:</span><span class="va">R</span></code></pre>
+<p>This would add <code>bond/skyfall</code> repo as the first place where <code>exceedapi</code> would look for steps, followed by the default <code>legenepi/exceed-pipelines</code></p>
+<p>Next you’ve to decide whether you want this to be a per-project configuration file or a global one.</p>
 <ul>
 <li><p>For per-project files, create an <code>exceedapi.yaml</code> in the top-level directory of your project.</p></li>
 <li><p>For global configuration files create <code>.exceedapi.yaml</code> in your home directory.</p></li>
 </ul>
 <p>NOTE: the name of configuration file is different if it’s in the home directory and must start with a dot <code>.</code></p>
-</div>
-<div class="section level2">
-<h2 id="advanced-setup">Advanced setup<a class="anchor" aria-label="anchor" href="#advanced-setup"></a>
-</h2>
-<p>To ensure reproducibility of your code over time you need to fix the specific version of <code>exceed-pipelines</code> you’re working with. One of the simplest and reliable ways to do that is using <a href="https://git-scm.com/book/en/v2/Git-Tools-Submodules" class="external-link">submodules with git.</a></p>
-<p>TODO: add instructions for setting up git submodules</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
