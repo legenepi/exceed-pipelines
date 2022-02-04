@@ -41,7 +41,7 @@ ExportProfiles <- R6::R6Class(
         collect()
 
       demographics <- self$client$pipeline() %>%
-        add_step(LoadDemographicProfiles) %>%
+        add_step(LoadDemographicProfiles, drop_withdrawn = c(2, 3)) %>%
         collect()
 
       nhsnumbers <- client$pipeline() %>%

@@ -43,7 +43,7 @@ LoadDemographicProfiles <- R6::R6Class(
       )
     },
 
-    get_dataset = function(step, .collect, snapshot = NULL, ...) {
+    get_dataset = function(step, .collect, ..., snapshot = NULL) {
       self$client$pipeline(snapshot = snapshot) %>%
         add_step({{step}}) %>%
         select(exceed_id, ...) %>%
@@ -108,7 +108,7 @@ LoadDemographicProfiles <- R6::R6Class(
       )
     },
 
-    get_survey_responses = function(step, .collect, snapshot = NULL, ...) {
+    get_survey_responses = function(step, .collect, ..., snapshot = NULL) {
       private$get_dataset(
         {{step}},
         snapshot = snapshot,
@@ -153,8 +153,8 @@ LoadDemographicProfiles <- R6::R6Class(
       rpcollected <- private$get_survey_responses(
         LoadResearchProfessionalCollectedResponses,
         .collect,
-        sex,
-        dob = date_of_birth
+        dob = date_of_birth,
+        sex
       )
 
       dob <- dplyr::bind_rows(profiles, baseline, rpcollected, primarycare) %>%
