@@ -43,8 +43,8 @@ LoadDemographicProfiles <- R6::R6Class(
       )
     },
 
-    get_dataset = function(step, .collect, ...) {
-      self$client$pipeline() %>%
+    get_dataset = function(step, .collect, snapshot = NULL, ...) {
+      self$client$pipeline(snapshot = snapshot) %>%
         add_step({{step}}) %>%
         select(exceed_id, ...) %>%
         add_step(MergeUUIDs, domain = "exceed", by = "exceed_id") %>%
@@ -56,8 +56,8 @@ LoadDemographicProfiles <- R6::R6Class(
       profiles <- private$get_dataset(
         LoadProfiles,
         .collect,
-        dob = birth_date,
         deceased,
+        dob = birth_date,
         consent_date = basicconsent__date,
         consent_version = basicconsent__version,
         consent_withdrawn = basicconsent__withdrawals__scope,
@@ -101,15 +101,17 @@ LoadDemographicProfiles <- R6::R6Class(
     get_primarycare_data = function(.collect) {
       private$get_dataset(
         LoadPrimaryCarePatients,
+        snapshot = "2018-12-12",
         .collect,
         dob = pseudo_dob,
         sex = gender
       )
     },
 
-    get_survey_responses = function(step, .collect, ...) {
+    get_survey_responses = function(step, .collect, snapshot = NULL, ...) {
       private$get_dataset(
         {{step}},
+        snapshot = snapshot,
         .collect,
         timestamp,
         complete,
@@ -151,8 +153,8 @@ LoadDemographicProfiles <- R6::R6Class(
       rpcollected <- private$get_survey_responses(
         LoadResearchProfessionalCollectedResponses,
         .collect,
-        dob = date_of_birth,
-        sex
+        sex,
+        dob = date_of_birth
       )
 
       dob <- dplyr::bind_rows(profiles, baseline, rpcollected, primarycare) %>%

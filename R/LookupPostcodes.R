@@ -41,7 +41,7 @@ LookupPostcodes <- R6::R6Class(
         httr::content() %>%
         purrr::pluck("result") %>%
         purrr::map_dfr(~ {
-          .x$result$codes <- NULL #private$make_tibble(.x$result$codes)
+          .x$result$codes <- NULL
           .x$result <- purrr::discard(.x$result, is.null)
           private$make_tibble(.x)
         }) %>%
