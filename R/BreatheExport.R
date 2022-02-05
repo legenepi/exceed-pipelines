@@ -20,9 +20,9 @@ BreatheExport <- R6::R6Class(
 
       self$create_archive(tables)
 
-      self$create_manifest(tables)
+      self$create_manifest(tables, template = self$args$manifest)
 
-      self$create_codebook(tables)
+      self$create_codebook(tables, template = self$args$codebook)
 
       self$show_summary()
 

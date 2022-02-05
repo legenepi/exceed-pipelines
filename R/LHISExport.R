@@ -20,7 +20,7 @@ LHISExport <- R6::R6Class(
 
       self$create_archive(tables)
 
-      self$create_manifest(tables)
+      self$create_manifest(tables, template = self$args$manifest)
 
       self$show_summary()
 
