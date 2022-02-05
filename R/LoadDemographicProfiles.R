@@ -83,17 +83,19 @@ LoadDemographicProfiles <- R6::R6Class(
         dplyr::left_join(consent_withdrawn, by = "uuid") %>%
         dplyr::left_join(consent_withdrawn_date, by = "uuid")
 
-      drop_withdrawn <- self$args$drop_withdrawn
+      exclude_withdrawn <- self$args$exclude_withdrawn
 
-      if (isFALSE(drop_withdrawn))
-        drop_withdrawn <- NULL
-      else if (isTRUE(drop_withdrawn))
-        drop_withdrawn <- seq(1,3)
-      else if (is.null(drop_withdrawn))
-        drop_withdrawn <- 3
+      if (isFALSE(exclude_withdrawn))
+        exclude_withdrawn <- NULL
+      else if (isTRUE(exclude_withdrawn))
+        exclude_withdrawn <- seq(1,3)
+      else if (is.null(exclude_withdrawn))
+        exclude_withdrawn <- 3
 
-      if (!is.null(drop_withdrawn))
-        profiles <- filter(profiles, !(consent_withdrawn %in% drop_withdrawn))
+      cli::cli_h3("exclude withdrawn: {paste(exclude_withdrawn)}")
+
+      if (!is.null(exclude_withdrawn))
+        profiles <- filter(profiles, !(consent_withdrawn %in% exclude_withdrawn))
 
       return(profiles)
     },
