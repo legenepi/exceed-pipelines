@@ -106,7 +106,7 @@ ExportTable <- R6::R6Class(
       factors <- dataset %>%
         select(where(is.factor)) %>%
         ncol()
-      self$alert_danger(glue::glue("{factors} factors"), factors == 0)
+      self$alert_warning(glue::glue("{factors} factors"), factors == 0)
 
       character_fields <- metadata %>%
         filter(type == "CHARACTER") %>%

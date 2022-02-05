@@ -59,12 +59,25 @@ GenericExport <- R6::R6Class(
       suffix <- "zip"
       if (self$args$encrypt) {
         suffix <- "7z"
-        private$.password <- self$generate_password()
+        private$.password <- self$generate_password(
+          length = self$config$archive$password_length
+        )
       }
 
-      private$.archive <- self$make_filename(prefix = "file2", suffix = suffix)
-      private$.codebook <- self$make_filename(prefix = "codebook", suffix = "pdf")
-      private$.manifest <- self$make_filename(prefix = "manifest", suffix = "csv")
+      private$.archive <- self$make_filename(
+        prefix = self$config$archive$prefix,
+        suffix = suffix
+      )
+
+      private$.codebook <- self$make_filename(
+        prefix = "codebook",
+        suffix = "pdf"
+      )
+
+      private$.manifest <- self$make_filename(
+        prefix = "manifest",
+        suffix = "csv"
+      )
     },
 
     get_config = function() {
@@ -124,8 +137,11 @@ GenericExport <- R6::R6Class(
         fs::path_dir()
     },
 
-    generate_password = function(length = 32) {
-      paste(sample(c(0:9, letters, LETTERS), length), collapse="")
+    generate_password = function(length = NULL) {
+      if (is.null(length))
+        length <- 32
+
+      paste(sample(c(0:9, letters, LETTERS), length, replace = TRUE), collapse="")
     },
 
     prepare_export = function(domain) {
@@ -134,18 +150,6 @@ GenericExport <- R6::R6Class(
         add_step(LoadIdentities, domain = domain) %>%
         select(uuid, STUDY_ID = pid) %>%
         collect()
-
-      cli::cli_h2("Profiles")
-      exclusions <- self$client$pipeline() %>%
-        add_step(LoadProfiles) %>%
-        add_step(MergeUUIDs, domain = "exceed", by = "exceed_id") %>%
-        select(uuid, deceased, scope = basicconsent__withdrawals__scope) %>%
-        collect() %>%
-        filter(scope == 3 | deceased == TRUE) %>%
-        dplyr::left_join(identities, by = "uuid")
-
-      identities <- identities %>%
-        anti_join(exclusions, by = "uuid")
 
       self$export_tables(self$config$tables, identities = identities)
     },
@@ -284,7 +288,7 @@ GenericExport <- R6::R6Class(
         purrr::map_dfr(self$calulate_checksums)
 
       self$render_markdown(
-        input = here::here(self$get_source_path(), "manifest_template.Rmd"),
+        input = here::here(self$get_source_path(), "templates/manifest_template.Rmd"),
         output_file = fs::path_ext_set(self$manifest, "pdf"),
         params = list(
           encrypt = self$args$encrypt,

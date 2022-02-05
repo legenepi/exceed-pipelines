@@ -43,8 +43,8 @@ LoadDemographicProfiles <- R6::R6Class(
       )
     },
 
-    get_dataset = function(step, .collect, ...) {
-      self$client$pipeline() %>%
+    get_dataset = function(step, .collect, ..., snapshot = NULL) {
+      self$client$pipeline(snapshot = snapshot) %>%
         add_step({{step}}) %>%
         select(exceed_id, ...) %>%
         add_step(MergeUUIDs, domain = "exceed", by = "exceed_id") %>%
@@ -56,8 +56,8 @@ LoadDemographicProfiles <- R6::R6Class(
       profiles <- private$get_dataset(
         LoadProfiles,
         .collect,
-        dob = birth_date,
         deceased,
+        dob = birth_date,
         consent_date = basicconsent__date,
         consent_version = basicconsent__version,
         consent_withdrawn = basicconsent__withdrawals__scope,
@@ -83,17 +83,19 @@ LoadDemographicProfiles <- R6::R6Class(
         dplyr::left_join(consent_withdrawn, by = "uuid") %>%
         dplyr::left_join(consent_withdrawn_date, by = "uuid")
 
-      drop_withdrawn <- self$args$drop_withdrawn
+      exclude_withdrawn <- self$args$exclude_withdrawn
 
-      if (isFALSE(drop_withdrawn))
-        drop_withdrawn <- NULL
-      else if (isTRUE(drop_withdrawn))
-        drop_withdrawn <- seq(1,3)
-      else if (is.null(drop_withdrawn))
-        drop_withdrawn <- 3
+      if (isFALSE(exclude_withdrawn))
+        exclude_withdrawn <- NULL
+      else if (isTRUE(exclude_withdrawn))
+        exclude_withdrawn <- seq(1,3)
+      else if (is.null(exclude_withdrawn))
+        exclude_withdrawn <- 3
 
-      if (!is.null(drop_withdrawn))
-        profiles <- filter(profiles, !(consent_withdrawn %in% drop_withdrawn))
+      cli::cli_h3("exclude withdrawn: {paste(exclude_withdrawn)}")
+
+      if (!is.null(exclude_withdrawn))
+        profiles <- filter(profiles, !(consent_withdrawn %in% exclude_withdrawn))
 
       return(profiles)
     },
@@ -101,15 +103,17 @@ LoadDemographicProfiles <- R6::R6Class(
     get_primarycare_data = function(.collect) {
       private$get_dataset(
         LoadPrimaryCarePatients,
+        snapshot = "2018-12-12",
         .collect,
         dob = pseudo_dob,
         sex = gender
       )
     },
 
-    get_survey_responses = function(step, .collect, ...) {
+    get_survey_responses = function(step, .collect, ..., snapshot = NULL) {
       private$get_dataset(
         {{step}},
+        snapshot = snapshot,
         .collect,
         timestamp,
         complete,
