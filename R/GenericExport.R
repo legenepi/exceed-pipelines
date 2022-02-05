@@ -183,12 +183,13 @@ GenericExport <- R6::R6Class(
 
     create_encrypted_archive = function(archive, files, password) {
       command <- glue::glue(
-        self$config$defaults$archiver$encrypted,
+        self$config$system$commands$archive$create,
         files = paste(files, collapse = " ")
       )
       system(command)
-      system(glue::glue("7z l -p{password} {archive}"))
-      cli::cat_line(cli::boxx(glue::glue(" {password}")))
+      system(glue::glue(self$config$system$commands$archive$list))
+      cli::cli_h2("password")
+      cli::cat_line(cli::boxx(glue::glue("{password}")))
     },
 
     create_unencrypted_archive = function(archive, files) {
@@ -266,12 +267,12 @@ GenericExport <- R6::R6Class(
       cli::cli_alert_success(self$archive)
     },
 
-    create_manifest = function(tables) {
+    create_manifest = function(tables, template) {
       cli::cli_h1("Creating manifest")
 
       self$create_manifest_csv(tables)
 
-      self$create_manifest_pdf(tables)
+      self$create_manifest_pdf(tables, template)
     },
 
     create_manifest_csv = function(tables) {
@@ -281,14 +282,14 @@ GenericExport <- R6::R6Class(
         self$write_csv(fs::path_ext_set(self$manifest, "csv"))
     },
 
-    create_manifest_pdf = function(tables) {
+    create_manifest_pdf = function(tables, template) {
       cli::cli_h2("Creating manifest (.pdf)")
 
       files <- private$get_file_list(tables) %>%
         purrr::map_dfr(self$calulate_checksums)
 
       self$render_markdown(
-        input = here::here(self$get_source_path(), "templates/manifest_template.Rmd"),
+        input = here::here(self$get_source_path(), template),
         output_file = fs::path_ext_set(self$manifest, "pdf"),
         params = list(
           encrypt = self$args$encrypt,
@@ -303,11 +304,11 @@ GenericExport <- R6::R6Class(
       )
     },
 
-    create_codebook = function(tables) {
+    create_codebook = function(tables, template) {
       cli::cli_h2("Creating codebook (.pdf)")
 
       self$render_markdown(
-        input = here::here(self$get_source_path(), "codebook_template.Rmd"),
+        input = here::here(self$get_source_path(), template),
         output_file = self$codebook,
         params = list(
           version = self$get_version(),
