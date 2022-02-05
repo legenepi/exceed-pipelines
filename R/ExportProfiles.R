@@ -61,7 +61,11 @@ ExportProfiles <- R6::R6Class(
         left_join(profiles, by = "uuid") %>%
         left_join(nhsnumbers, by = "uuid") %>%
         inner_join(self$args$identities, by = "uuid") %>%
-        mutate(across(c(first_name, last_name), str_to_lower)) %>%
+        mutate(
+          sex = sex %>%
+            fct_recode("M" = "Male", "F" = "Female") %>%
+            as.character()
+        ) %>%
         group_by(uuid) %>%
         group_map(function(.x, .y) {
           nhs_numbers <- discard(.x$nhs_no, is.na)
