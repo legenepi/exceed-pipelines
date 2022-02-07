@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description ExportTable class
 #' @importFrom R6 R6Class
+#' @export
 ExportTable <- R6::R6Class(
   "ExportTable",
   inherit = exceedapi::Step,

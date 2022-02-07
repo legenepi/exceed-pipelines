@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description LoadProfiles class
 #' @importFrom R6 R6Class
+#' @export
 LoadProfiles <- R6::R6Class(
   "LoadProfiles",
   inherit = exceedapi::Step,

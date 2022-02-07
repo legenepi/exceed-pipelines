@@ -7,6 +7,7 @@
 #' @format An R6 class object.
 #' @description CalculateAge class
 #' @importFrom R6 R6Class
+#' @export
 CalculateAge <- R6::R6Class(
   "CalculateAge",
   inherit = exceedapi::Step,

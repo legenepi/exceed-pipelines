@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description LoadPrimaryCarePatients class
 #' @importFrom R6 R6Class
+#' @export
 LoadPrimaryCarePatients <- R6::R6Class(
   "LoadPrimaryCarePatients",
   inherit = exceedapi::Step,

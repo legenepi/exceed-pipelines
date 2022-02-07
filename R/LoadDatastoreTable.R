@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description LoadDatastoreTable class
 #' @importFrom R6 R6Class
+#' @export
 LoadDatastoreTable <- R6::R6Class(
   "LoadDatastoreTable",
   inherit = exceedapi::Step,

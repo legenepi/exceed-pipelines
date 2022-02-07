@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description LoadSurveyMetadata class
 #' @importFrom R6 R6Class
+#' @export
 LoadSurveyMetadata <- R6::R6Class(
   "LoadSurveyMetadata",
   inherit = exceedapi::Step,

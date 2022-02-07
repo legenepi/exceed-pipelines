@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description ExportPhenotypes class
 #' @importFrom R6 R6Class
+#' @export
 ExportPhenotypes <- R6::R6Class(
   "ExportPhenotypes",
   inherit = ExportTable,

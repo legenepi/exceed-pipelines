@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description LoadONSBoundaries class
 #' @importFrom R6 R6Class
+#' @export
 LoadONSBoundaries <- R6::R6Class(
   "LoadONSBoundaries",
   inherit = CachedDownload,

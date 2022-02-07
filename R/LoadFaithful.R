@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description LoadFaithful class
 #' @importFrom R6 R6Class
+#' @export
 LoadFaithful <- R6::R6Class(
   "LoadFaithful",
   inherit = LoadDefaultDataset,

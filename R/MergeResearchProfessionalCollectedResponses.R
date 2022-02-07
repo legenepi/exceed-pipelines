@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description MergeResearchProfessionalCollectedResponses class
 #' @importFrom R6 R6Class
+#' @export
 MergeResearchProfessionalCollectedResponses <- R6::R6Class(
   "MergeResearchProfessionalCollectedResponses",
   inherit = LoadResearchProfessionalCollectedResponses,

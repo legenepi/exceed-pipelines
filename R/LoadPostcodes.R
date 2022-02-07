@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description LoadPostcodes class
 #' @importFrom R6 R6Class
+#' @export
 LoadPostcodes <- R6::R6Class(
   "LoadPostcodes",
   inherit = exceedapi::Step,

@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description LoadPhenotypes class
 #' @importFrom R6 R6Class
+#' @export
 LoadPhenotypes <- R6::R6Class(
   "LoadPhenotypes",
   inherit = exceedapi::Step,

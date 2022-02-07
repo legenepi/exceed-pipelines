@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description LoadNHSNumbers class
 #' @importFrom R6 R6Class
+#' @export
 LoadNHSNumbers <- R6::R6Class(
   "LoadNHSNumbers",
   inherit = LoadDatastoreTable,

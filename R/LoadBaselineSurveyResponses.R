@@ -7,6 +7,7 @@
 #' @description LoadBaselineSurveyResponses class. This step load responses
 #' from all baseline questionnaires and combine them into a single data frame.
 #' @importFrom R6 R6Class
+#' @export
 LoadBaselineSurveyResponses <- R6::R6Class(
   "LoadBaselineSurveyResponses",
   inherit = LoadSurveyResponses,

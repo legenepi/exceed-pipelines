@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description LHISExport class
 #' @importFrom R6 R6Class
+#' @export
 LHISExport <- R6::R6Class(
   "LHISExport",
   inherit = GenericExport,

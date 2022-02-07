@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description LoadMotorTrendCars class
 #' @importFrom R6 R6Class
+#' @export
 LoadMotorTrendCars <- R6::R6Class(
   "LoadMotorTrendCars",
   inherit = LoadDefaultDataset,

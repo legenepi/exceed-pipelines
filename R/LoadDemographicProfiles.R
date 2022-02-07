@@ -12,6 +12,7 @@
 #' - research professional collected data
 #' - electronic health records (primary care)
 #' @importFrom R6 R6Class
+#' @export
 LoadDemographicProfiles <- R6::R6Class(
   "LoadDemographicProfiles",
   inherit = exceedapi::Step,

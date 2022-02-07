@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description ConvertToKilograms class
 #' @importFrom R6 R6Class
+#' @export
 ConvertToKilograms <- R6::R6Class(
   "ConvertToKilograms",
   inherit = exceedapi::Step,
