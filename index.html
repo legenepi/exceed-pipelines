@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="index.html">exceed.pipelines</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,18 +87,33 @@
 <div class="section level2">
 <h2 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h2>
-<p>By default, <code>exceedapi</code> will search for reusable steps from the <a href="https://github.com/legenepi/exceed-pipelines" class="external-link">legenepi/exceed-pipelines</a> repository on github. Pipelines can also loaded from a local directory or from any other github repo. For example, if you want to load steps from the a repo named <code>skyfall</code> under the account <code>bond</code>, you would create a .yaml config file with the following:</p>
+<p>By default, <code>exceedapi</code> will search for reusable steps in the current environment or in the main branch in <a href="https://github.com/legenepi/exceed-pipelines" class="external-link">legenepi/exceed-pipelines</a> repository on github. No configuration is necessary but if you’re loading steps from the GitHub repo then it’s recommended that you create a <a href="https://github.com/settings/tokens/new" class="external-link">GitHub Personal Access Token (PAT)</a> with <code>repo</code> scope, and set it using <code>gitcreds::gitcreds_set()</code>. For more information on using GitHub Personal Access Token (PAT) in R, follow the guide at <a href="https://happygitwithr.com/https-pat.html#tldr" class="external-link">Happy Git</a></p>
+<p>Pipelines can also loaded from a local directory or from any other github repo. For example, if you want to load steps from the <code>main</code> branch in a repo named <code>skyfall</code> under the account <code>bond</code>, you would create a .yaml config file with the following:</p>
 <pre class="{yaml}"><code><span class="va">pipeline</span><span class="op">:</span>
   <span class="va">search</span><span class="op">:</span>
-  <span class="op">-</span> <span class="va">bond</span><span class="op">/</span><span class="va">skyfall</span>
+  <span class="op">-</span> <span class="va">bond</span><span class="op">/</span><span class="va">skyfall</span><span class="op">@</span><span class="va">main</span>
   <span class="op">-</span> <span class="va">legenepi</span><span class="op">/</span><span class="va">exceed</span><span class="op">-</span><span class="va">pipelines</span><span class="op">@</span><span class="va">main</span><span class="op">:</span><span class="va">R</span></code></pre>
 <p>This would add <code>bond/skyfall</code> repo as the first place where <code>exceedapi</code> would look for steps, followed by the default <code>legenepi/exceed-pipelines</code></p>
-<p>Next you’ve to decide whether you want this to be a per-project configuration file or a global one.</p>
+<p>You can specify the exact version to load from GitHub using the standard GitHub syntax for referencing branches and tags. For example, to load a specific version from the default repo, you can create a config file with the following:</p>
+<pre class="{yaml}"><code><span class="va">pipeline</span><span class="op">:</span>
+  <span class="va">search</span><span class="op">:</span>
+  <span class="op">-</span> <span class="va">legenepi</span><span class="op">/</span><span class="va">exceed</span><span class="op">-</span><span class="va">pipelines</span><span class="op">@</span><span class="va">v0.4.0</span><span class="op">:</span><span class="va">R</span></code></pre>
+<p>You also need to decide whether you want this to be a per-project configuration file or a global one.</p>
 <ul>
 <li><p>For per-project files, create an <code>exceedapi.yaml</code> in the top-level directory of your project.</p></li>
 <li><p>For global configuration files create <code>.exceedapi.yaml</code> in your home directory.</p></li>
 </ul>
+<p>In most cases, it’s recommended to create a per-project configuration files, kept in separate directories.</p>
 <p>NOTE: the name of configuration file is different if it’s in the home directory and must start with a dot <code>.</code></p>
+</div>
+<div class="section level2">
+<h2 id="installing-the-package">Installing the package<a class="anchor" aria-label="anchor" href="#installing-the-package"></a>
+</h2>
+<p>Installing the package is not required if you just want to load pipeline steps from GitHub directly. You could, however, install <code>exceed.pipelines</code> as a package but keep in mind you’d have to update it whenever new functionality is added.</p>
+<p>You can install the latest version of <code>exceed.pipelines</code> package from the development server:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"https://dev.exceed.le.ac.uk/exceed-pipelines/dist/exceed.pipelines.tar.gz"</span><span class="op">)</span></code></pre></div>
+<p>All previous versions of the package are archived <a href="https://dev.exceed.le.ac.uk/exceed-pipelines/dist?V=1" class="external-link">here</a>.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

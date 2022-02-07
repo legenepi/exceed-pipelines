@@ -46,6 +46,9 @@
     <loc>https://legenepi.github.io/exceed-pipelines/reference/ExportPhenotypes.html</loc>
   </url>
   <url>
+    <loc>https://legenepi.github.io/exceed-pipelines/reference/ExportProfiles.html</loc>
+  </url>
+  <url>
     <loc>https://legenepi.github.io/exceed-pipelines/reference/ExportSurvey.html</loc>
   </url>
   <url>
@@ -59,6 +62,9 @@
   </url>
   <url>
     <loc>https://legenepi.github.io/exceed-pipelines/reference/GroupEthnicities.html</loc>
+  </url>
+  <url>
+    <loc>https://legenepi.github.io/exceed-pipelines/reference/LHISExport.html</loc>
   </url>
   <url>
     <loc>https://legenepi.github.io/exceed-pipelines/reference/LoadAntibodyTestDataset.html</loc>
@@ -95,6 +101,9 @@
   </url>
   <url>
     <loc>https://legenepi.github.io/exceed-pipelines/reference/LoadMotorTrendCars.html</loc>
+  </url>
+  <url>
+    <loc>https://legenepi.github.io/exceed-pipelines/reference/LoadNHSNumbers.html</loc>
   </url>
   <url>
     <loc>https://legenepi.github.io/exceed-pipelines/reference/LoadONSBoundaries.html</loc>
