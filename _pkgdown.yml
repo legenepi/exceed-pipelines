@@ -45,6 +45,9 @@ reference:
     contents:
     - LoadIdentities
     - MergeUUIDs
+  - title: LHIS
+    contents:
+    - LHISExport
   - title: Miscellaneous
     contents:
     - CachedCSV
@@ -58,9 +61,11 @@ reference:
     - CalculateAge
     - ConvertToCentimeters
     - ConvertToKilograms
+    - ExportProfiles
     - GroupEthnicities
     - LoadProfiles
     - LoadDemographicProfiles
+    - LoadNHSNumbers
   - title: REDCap
     contents:
     - LoadAntibodyTestSurveyResponses
