@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description LoadIris class
 #' @importFrom R6 R6Class
+#' @export
 LoadIris <- R6::R6Class(
   "LoadIris",
   inherit = LoadDefaultDataset,

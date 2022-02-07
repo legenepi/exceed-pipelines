@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description ExportProfiles class
 #' @importFrom R6 R6Class
+#' @export
 ExportProfiles <- R6::R6Class(
   "ExportProfiles",
   inherit = ExportTable,

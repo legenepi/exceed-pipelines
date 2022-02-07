@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description BreatheExport class
 #' @importFrom R6 R6Class
+#' @export
 ExportAntibodyTestResults <- R6::R6Class(
   "ExportAntibodyTestResults",
   inherit = ExportTable,

@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description LoadResearchProfessionalCollectedResponses class
 #' @importFrom R6 R6Class
+#' @export
 LoadResearchProfessionalCollectedResponses <- R6::R6Class(
   "LoadResearchProfessionalCollectedResponses",
   inherit = LoadSurveyResponses,

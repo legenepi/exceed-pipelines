@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description FileDownload class
 #' @importFrom R6 R6Class
+#' @export
 FileDownload <- R6::R6Class(
   "FileDownload",
   inherit = exceedapi::Step,

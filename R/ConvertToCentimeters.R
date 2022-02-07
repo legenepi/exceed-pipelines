@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description ConvertToCentimeters class
 #' @importFrom R6 R6Class
+#' @export
 ConvertToCentimeters <- R6::R6Class(
   "ConvertToCentimeters",
   inherit = exceedapi::Step,

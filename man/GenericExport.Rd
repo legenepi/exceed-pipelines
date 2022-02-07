@@ -113,7 +113,7 @@ Generic export class that includes password-protected compression (optional)
 \if{latex}{\out{\hypertarget{method-generate_password}{}}}
 \subsection{Method \code{generate_password()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{GenericExport$generate_password(length = 32)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{GenericExport$generate_password(length = NULL)}\if{html}{\out{</div>}}
 }
 
 }
@@ -194,7 +194,7 @@ Generic export class that includes password-protected compression (optional)
 \if{latex}{\out{\hypertarget{method-create_manifest}{}}}
 \subsection{Method \code{create_manifest()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{GenericExport$create_manifest(tables)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{GenericExport$create_manifest(tables, template)}\if{html}{\out{</div>}}
 }
 
 }
@@ -212,7 +212,7 @@ Generic export class that includes password-protected compression (optional)
 \if{latex}{\out{\hypertarget{method-create_manifest_pdf}{}}}
 \subsection{Method \code{create_manifest_pdf()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{GenericExport$create_manifest_pdf(tables)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{GenericExport$create_manifest_pdf(tables, template)}\if{html}{\out{</div>}}
 }
 
 }
@@ -221,7 +221,7 @@ Generic export class that includes password-protected compression (optional)
 \if{latex}{\out{\hypertarget{method-create_codebook}{}}}
 \subsection{Method \code{create_codebook()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{GenericExport$create_codebook(tables)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{GenericExport$create_codebook(tables, template)}\if{html}{\out{</div>}}
 }
 
 }

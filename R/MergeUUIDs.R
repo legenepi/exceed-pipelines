@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description BreatheExport class
 #' @importFrom R6 R6Class
+#' @export
 MergeUUIDs <- R6::R6Class(
   "MergeUUIDs",
   inherit = LoadIdentities,

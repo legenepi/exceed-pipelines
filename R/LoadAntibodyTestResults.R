@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description LoadAntibodyTestResults class
 #' @importFrom R6 R6Class
+#' @export
 LoadAntibodyTestResults <- R6::R6Class(
   "LoadAntibodyTestResults",
   inherit = exceedapi::Step,

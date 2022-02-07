@@ -7,6 +7,7 @@
 #' @format An R6 class object.
 #' @description CachedCSV class
 #' @importFrom R6 R6Class
+#' @export
 CachedCSV <- R6::R6Class(
   "CachedCSV",
   inherit = CachedDownload,

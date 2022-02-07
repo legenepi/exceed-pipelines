@@ -6,6 +6,7 @@
 #' @format An R6 class object.
 #' @description LoadIdentities class
 #' @importFrom R6 R6Class
+#' @export
 LoadIdentities <- R6::R6Class(
   "LoadIdentities",
   inherit = exceedapi::Step,
