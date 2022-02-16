@@ -18,7 +18,7 @@ LoadDemographicProfiles <- R6::R6Class(
   inherit = exceedapi::Step,
 
   private = list(
-    coalesce = function(data, col, func = NULL, slicer = dplyr::slice_min) {
+    coalesce = function(data, col, func = NULL, slicer = NULL) {
       if (is.null(func))
         func <- function(.x) {
           dplyr::case_when(
@@ -26,20 +26,31 @@ LoadDemographicProfiles <- R6::R6Class(
           )
         }
 
+      if (is.null(slicer)) {
+        slicer <- function(.x) {
+          dplyr::slice_min(.x, order_by = {{col}}, with_ties = FALSE)
+        }
+      }
+
       data %>%
         filter(!is.na({{col}})) %>%
         dplyr::group_by(uuid) %>%
         mutate(across({{col}}, func)) %>%
-        slicer(order_by = {{col}}, with_ties = FALSE) %>%
+        slicer() %>%
         filter(!is.na({{col}})) %>%
         dplyr::distinct(across(c(uuid, {{col}})))
     },
 
     coalesce_date = function(data, col, threshold = Inf, ...) {
-      private$coalesce(data, {{col}}, func = function(.x) {
-        dplyr::case_when(
-          dplyr::n_distinct(.x) == 1 | diff(range(.x)) <= threshold ~ .x
-        )},
+      private$coalesce(
+        data,
+        {{col}},
+        func = function(.x) {
+          dplyr::case_when(
+            dplyr::n_distinct(.x) == 1 | diff(range(.x)) <= threshold ~ .x
+          )
+        },
+        slicer = dplyr::slice_head,
         ...
       )
     },
