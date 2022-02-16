@@ -65,8 +65,7 @@ LoadDemographicProfiles <- R6::R6Class(
         consent_withdrawn_date = basicconsent__withdrawals__date_effective,
         postcode = primaryaddress__address__postcode,
         ...
-      ) %>%
-        mutate(postcode = stringr::str_replace_all(postcode, " ", ""))
+      )
 
       postcode <- private$coalesce(profiles, postcode)
       deceased <- private$coalesce(profiles, deceased, any)
@@ -132,8 +131,7 @@ LoadDemographicProfiles <- R6::R6Class(
           lsoa = lsoa11cd,
           msoa = msoa11cd
         ) %>%
-        .collect() %>%
-        mutate(postcode = stringr::str_replace_all(postcode, " ", ""))
+        .collect()
     }
   ),
 
