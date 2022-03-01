@@ -74,11 +74,15 @@ LoadDemographicProfiles <- R6::R6Class(
         consent_version = basicconsent__version,
         consent_withdrawn = basicconsent__withdrawals__scope,
         consent_withdrawn_date = basicconsent__withdrawals__date_effective,
-        postcode = primaryaddress__address__postcode,
+        ccg = primaryaddress__address__ccg,
+        lsoa = primaryaddress__address__lsoa,
+        msoa = primaryaddress__address__msoa,
         ...
       )
 
-      postcode <- private$coalesce(profiles, postcode)
+      ccg <- private$coalesce(profiles, ccg)
+      lsoa <- private$coalesce(profiles, lsoa)
+      msoa <- private$coalesce(profiles, msoa)
       deceased <- private$coalesce(profiles, deceased, any)
       consent <- private$coalesce(profiles, consent_date, min)
       consent_version <- private$coalesce(profiles, consent_version, max)
@@ -88,7 +92,9 @@ LoadDemographicProfiles <- R6::R6Class(
       profiles <- profiles %>%
         select(uuid, dob) %>%
         dplyr::left_join(deceased, by = "uuid") %>%
-        dplyr::left_join(postcode, by = "uuid") %>%
+        dplyr::left_join(ccg, by = "uuid") %>%
+        dplyr::left_join(lsoa, by = "uuid") %>%
+        dplyr::left_join(msoa, by = "uuid") %>%
         dplyr::left_join(consent, by = "uuid") %>%
         dplyr::left_join(consent_version, by = "uuid") %>%
         dplyr::left_join(consent_withdrawn, by = "uuid") %>%
@@ -131,18 +137,6 @@ LoadDemographicProfiles <- R6::R6Class(
         ...
       ) %>%
         filter(complete == 2)
-    },
-
-    get_postcodes = function(.collect) {
-      self$client$pipeline() %>%
-        add_step(LoadPostcodes) %>%
-        select(
-          postcode = pcd7,
-          ccg = ccg21cd,
-          lsoa = lsoa11cd,
-          msoa = msoa11cd
-        ) %>%
-        .collect()
     }
   ),
 
@@ -152,7 +146,6 @@ LoadDemographicProfiles <- R6::R6Class(
 
       profiles <- private$get_profiles(.collect)
       primarycare <- private$get_primarycare_data(.collect)
-      postcodes <- private$get_postcodes(.collect)
 
       baseline <- private$get_survey_responses(
         LoadBaselineSurveyResponses,
@@ -184,9 +177,7 @@ LoadDemographicProfiles <- R6::R6Class(
         dplyr::arrange(uuid) %>%
         dplyr::left_join(dob, by = "uuid") %>%
         dplyr::left_join(sex, by = "uuid") %>%
-        dplyr::left_join(ethnicity, by = "uuid") %>%
-        dplyr::left_join(postcodes, by = "postcode") %>%
-        select(-postcode)
+        dplyr::left_join(ethnicity, by = "uuid")
     }
   )
 )
