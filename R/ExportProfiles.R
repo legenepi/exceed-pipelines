@@ -44,7 +44,10 @@ ExportProfiles <- R6::R6Class(
       demographics <- self$client$pipeline() %>%
         add_step(
           LoadDemographicProfiles,
-          exclude_withdrawn = self$args$exclude_withdrawn
+          pseudo_dob_offset = self$args$pseudo_dob_offset,
+          allow_duplicates = self$args$allow_duplicates,
+          exclude_withdrawn = self$args$exclude_withdrawn,
+          exclude_incomplete_surveys = self$args$exclude_incomplete_surveys,
         ) %>%
         collect()
 
