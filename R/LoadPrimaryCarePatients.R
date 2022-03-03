@@ -11,13 +11,17 @@ LoadPrimaryCarePatients <- R6::R6Class(
   "LoadPrimaryCarePatients",
   inherit = exceedapi::Step,
 
+  private = list(
+    exceed_id_length = 6
+  ),
+
   public = list(
     transform = function(.data, .collect, ...) {
-      snapshot <- ifelse(is.null(self$snapshot), "2018-12-12", self$snapshot)
+      snapshot <- ifelse(is.null(self$snapshot), "2019-08-12", self$snapshot)
 
       primarycare_data <- self$client$ehr("primarycare", snapshot = snapshot)
 
-      patient <- primarycare_data %>%
+      patients <- primarycare_data %>%
         tbl("Patient") %>%
         .collect(...)
 
@@ -25,9 +29,14 @@ LoadPrimaryCarePatients <- R6::R6Class(
         tbl("PatientPractice") %>%
         .collect(...)
 
-      patient %>%
+      patients %>%
         dplyr::left_join(patient_practice, by = c(id = "patient_id")) %>%
         mutate(
+          exceed_id = str_sub(
+            str_pad(exceed_id, private$exceed_id_length, pad = "0"),
+            -private$exceed_id_length,
+            -1
+          ),
           pseudo_dob = lubridate::ymd(pseudo_dob),
           gender = forcats::fct_recode(gender, Female = "F", Male = "M")
         )

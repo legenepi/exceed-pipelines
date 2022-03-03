@@ -65,6 +65,19 @@ LoadDemographicProfiles <- R6::R6Class(
     },
 
     get_profiles = function(.collect, ...) {
+
+      exclude_withdrawn <- self$args$exclude_withdrawn
+
+      if (isFALSE(exclude_withdrawn))
+        exclude_withdrawn <- NULL
+      else if (isTRUE(exclude_withdrawn))
+        exclude_withdrawn <- seq(1,3)
+      else if (is.null(exclude_withdrawn))
+        exclude_withdrawn <- 3
+
+      exclude <- paste(exclude_withdrawn, collapse = ",")
+      message(glue::glue("{cli::symbol$bullet} profiles, exclude_withdrawn = {exclude}"))
+
       profiles <- private$get_dataset(
         LoadProfiles,
         .collect,
@@ -100,17 +113,6 @@ LoadDemographicProfiles <- R6::R6Class(
         dplyr::left_join(consent_withdrawn, by = "uuid") %>%
         dplyr::left_join(consent_withdrawn_date, by = "uuid")
 
-      exclude_withdrawn <- self$args$exclude_withdrawn
-
-      if (isFALSE(exclude_withdrawn))
-        exclude_withdrawn <- NULL
-      else if (isTRUE(exclude_withdrawn))
-        exclude_withdrawn <- seq(1,3)
-      else if (is.null(exclude_withdrawn))
-        exclude_withdrawn <- 3
-
-      cli::cli_h3("exclude withdrawn: {paste(exclude_withdrawn)}")
-
       if (!is.null(exclude_withdrawn))
         profiles <- filter(profiles, !(consent_withdrawn %in% exclude_withdrawn))
 
@@ -120,23 +122,36 @@ LoadDemographicProfiles <- R6::R6Class(
     get_primarycare_data = function(.collect) {
       private$get_dataset(
         LoadPrimaryCarePatients,
-        snapshot = "2018-12-12",
+        snapshot = "2019-08-12",
         .collect,
         dob = pseudo_dob,
         sex = gender
       )
     },
 
-    get_survey_responses = function(step, .collect, ..., snapshot = NULL) {
-      private$get_dataset(
+    get_survey_responses = function(
+      step,
+      .collect,
+      ...,
+      snapshot = NULL
+    ) {
+      responses <- private$get_dataset(
         {{step}},
         snapshot = snapshot,
         .collect,
         timestamp,
         complete,
         ...
-      ) %>%
-        filter(complete == 2)
+      )
+
+      exclude_incomplete_surveys <- TRUE
+      if (!is.null(self$args$exclude_incomplete_surveys))
+        exclude_incomplete_surveys <- self$args$exclude_incomplete_surveys
+
+      if (exclude_incomplete_surveys)
+        responses <- filter(responses, complete == 2)
+
+      return(responses)
     }
   ),
 
@@ -146,6 +161,13 @@ LoadDemographicProfiles <- R6::R6Class(
 
       profiles <- private$get_profiles(.collect)
       primarycare <- private$get_primarycare_data(.collect)
+
+      if (!is.null(self$args$pseudo_dob_offset)) {
+        primarycare <- primarycare %>%
+          mutate(
+            dob = dob + lubridate::days(self$args$pseudo_dob_offset)
+          )
+      }
 
       baseline <- private$get_survey_responses(
         LoadBaselineSurveyResponses,
@@ -163,21 +185,35 @@ LoadDemographicProfiles <- R6::R6Class(
       )
 
       dob <- dplyr::bind_rows(profiles, baseline, rpcollected, primarycare) %>%
-        private$coalesce_date(dob, threshold = lubridate::years(1))
+        select(uuid, dob)
+
+      profiles <- dplyr::select(profiles, -dob)
+
+      if (self$args$allow_duplicates) {
+        dob <- dplyr::filter(dob, !is.na(uuid), !is.na(dob))
+
+        profiles <- profiles %>%
+          dplyr::left_join(dob, by = "uuid") %>%
+          dplyr::distinct(uuid, dob, .keep_all = TRUE)
+      } else {
+        dob <- dob %>%
+          private$coalesce_date(dob, threshold = lubridate::years(1))
+
+        profiles <- profiles %>%
+          dplyr::left_join(dob, by = "uuid") %>%
+          dplyr::distinct(uuid, .keep_all = TRUE)
+      }
 
       sex <- dplyr::bind_rows(baseline, rpcollected, primarycare) %>%
-        mutate(sex = forcats::fct_drop(sex)) %>%
+        dplyr::mutate(sex = forcats::fct_drop(sex)) %>%
         private$coalesce(sex)
 
       ethnicity <- private$coalesce(baseline, ethnicity)
 
       profiles %>%
-        select(-dob) %>%
-        dplyr::distinct(uuid, .keep_all = TRUE) %>%
-        dplyr::arrange(uuid) %>%
-        dplyr::left_join(dob, by = "uuid") %>%
         dplyr::left_join(sex, by = "uuid") %>%
-        dplyr::left_join(ethnicity, by = "uuid")
+        dplyr::left_join(ethnicity, by = "uuid") %>%
+        dplyr::arrange(uuid)
     }
   )
 )
