@@ -201,10 +201,6 @@ LoadDemographicProfiles <- R6::R6Class(
           dplyr::distinct(uuid, .keep_all = TRUE)
       }
 
-      profiles <- profiles %>%
-        group_by(uuid) %>%
-        mutate(instance_id = row_number())
-
       sex <- dplyr::bind_rows(baseline, rpcollected, primarycare) %>%
         dplyr::mutate(sex = forcats::fct_drop(sex)) %>%
         private$coalesce(sex)
