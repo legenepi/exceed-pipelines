@@ -87,14 +87,7 @@ LoadBaselineSurveyResponses <- R6::R6Class(
         src_tbls() %>%
         stringr::str_subset("^scq")
 
-      pb <- self$progress_bar(total = length(tables))
-      tables %>%
-        purrr::map_dfr(function(project) {
-          pb$message(glue::glue("{cli::symbol$bullet} baseline: {project}"))
-          responses <- self$get_responses(project = project, ...)
-          pb$tick()
-          return(responses)
-        })
+      purrr::map_dfr(tables, self$get_responses, ...)
     }
   )
 )
