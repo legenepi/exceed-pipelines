@@ -21,6 +21,8 @@ LoadPrimaryCarePatients <- R6::R6Class(
 
       primarycare_data <- self$client$ehr("primarycare", snapshot = snapshot)
 
+      message(glue::glue("{cli::symbol$bullet} primarycare"))
+
       patients <- primarycare_data %>%
         tbl("Patient") %>%
         .collect(...)

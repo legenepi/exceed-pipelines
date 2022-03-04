@@ -63,6 +63,7 @@ GenericExport <- R6::R6Class(
         private$.password <- self$generate_password(
           length = self$config$archive$password_length
         )
+        writeLines(private$.password, fs::path(self$output_dir, ".password"))
       }
 
       private$.archive <- self$make_filename(
@@ -317,6 +318,14 @@ GenericExport <- R6::R6Class(
           tables = tables
         )
       )
+    },
+
+    create_report = function(tables, template) {
+      cli::cli_h1("Creating report")
+
+      # self$create_manifest_csv(tables)
+      #
+      # self$create_manifest_pdf(tables, template)
     },
 
     render_markdown = function(input, output_file, ...) {

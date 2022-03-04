@@ -15,6 +15,8 @@ LoadIdentities <- R6::R6Class(
     get_identities = function(.collect, ...) {
       self$logger$info("loading identities domain=%s", private$.domain)
 
+      message(glue::glue("{cli::symbol$bullet} identities"))
+
       domains <- self$client$identities() %>%
         src_tbls()
 

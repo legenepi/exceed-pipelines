@@ -36,19 +36,19 @@ ExportProfiles <- R6::R6Class(
     },
 
     prepare_dataset = function(metadata) {
-      profiles <- self$client$pipeline() %>%
-        add_step(LoadProfiles) %>%
-        add_step(MergeUUIDs, domain = "exceed", by = "exceed_id") %>%
-        collect()
-
       demographics <- self$client$pipeline() %>%
         add_step(
           LoadDemographicProfiles,
-          pseudo_dob_offset = self$args$pseudo_dob_offset,
+          pseudo_dob_offset = self$args$parent$args$pseudo_dob_offset,
           allow_duplicates = self$args$allow_duplicates,
           exclude_withdrawn = self$args$exclude_withdrawn,
           exclude_incomplete_surveys = self$args$exclude_incomplete_surveys,
         ) %>%
+        collect()
+
+      profiles <- self$client$pipeline() %>%
+        add_step(LoadProfiles) %>%
+        add_step(MergeUUIDs, domain = "exceed", by = "exceed_id") %>%
         collect()
 
       nhsnumbers <- client$pipeline() %>%
@@ -81,7 +81,7 @@ ExportProfiles <- R6::R6Class(
         }) %>%
         bind_rows()
 
-      profiles %>%
+      profiles <- profiles %>%
         select(
           STUDY_ID,
           nhs_number = nhs_no,
@@ -93,6 +93,15 @@ ExportProfiles <- R6::R6Class(
         ) %>%
         distinct() %>%
         rename_with(str_to_upper)
+
+      if (isTRUE(self$args$allow_duplicates)) {
+        profiles <- profiles %>%
+          group_by(STUDY_ID) %>%
+          mutate(STUDY_ID = paste(STUDY_ID, row_number(), sep = ".")) %>%
+          ungroup()
+      }
+
+      return(profiles)
     }
   )
 )

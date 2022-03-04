@@ -75,9 +75,6 @@ LoadDemographicProfiles <- R6::R6Class(
       else if (is.null(exclude_withdrawn))
         exclude_withdrawn <- 3
 
-      exclude <- paste(exclude_withdrawn, collapse = ",")
-      message(glue::glue("{cli::symbol$bullet} profiles, exclude_withdrawn = {exclude}"))
-
       profiles <- private$get_dataset(
         LoadProfiles,
         .collect,
@@ -203,6 +200,10 @@ LoadDemographicProfiles <- R6::R6Class(
           dplyr::left_join(dob, by = "uuid") %>%
           dplyr::distinct(uuid, .keep_all = TRUE)
       }
+
+      profiles <- profiles %>%
+        group_by(uuid) %>%
+        mutate(instance_id = row_number())
 
       sex <- dplyr::bind_rows(baseline, rpcollected, primarycare) %>%
         dplyr::mutate(sex = forcats::fct_drop(sex)) %>%
