@@ -79,11 +79,13 @@
 <li><p><a href="#method-calulate_checksums"><code>GenericExport$calulate_checksums()</code></a></p></li>
 <li><p><a href="#method-make_filename"><code>GenericExport$make_filename()</code></a></p></li>
 <li><p><a href="#method-write_csv"><code>GenericExport$write_csv()</code></a></p></li>
+<li><p><a href="#method-write_lines"><code>GenericExport$write_lines()</code></a></p></li>
 <li><p><a href="#method-create_archive"><code>GenericExport$create_archive()</code></a></p></li>
 <li><p><a href="#method-create_manifest"><code>GenericExport$create_manifest()</code></a></p></li>
 <li><p><a href="#method-create_manifest_csv"><code>GenericExport$create_manifest_csv()</code></a></p></li>
 <li><p><a href="#method-create_manifest_pdf"><code>GenericExport$create_manifest_pdf()</code></a></p></li>
 <li><p><a href="#method-create_codebook"><code>GenericExport$create_codebook()</code></a></p></li>
+<li><p><a href="#method-create_report"><code>GenericExport$create_report()</code></a></p></li>
 <li><p><a href="#method-render_markdown"><code>GenericExport$render_markdown()</code></a></p></li>
 <li><p><a href="#method-clone"><code>GenericExport$clone()</code></a></p></li>
 </ul></div><p><details><summary>Inherited methods</summary><ul><li><p><span class="pkg-link" data-pkg="exceedapi" data-topic="Step" data-id="add_step"><a href="NA#method-add_step"><code>exceedapi::Step$add_step()</code></a></span></p></li>
@@ -205,7 +207,7 @@
 
 <div class="section">
 <h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">GenericExport</span><span class="op">$</span><span class="fu">make_filename</span><span class="op">(</span><span class="va">prefix</span>, <span class="va">suffix</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">GenericExport</span><span class="op">$</span><span class="fu">make_filename</span><span class="op">(</span><span class="va">name</span>, <span class="va">suffix</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
 
@@ -218,11 +220,20 @@
 </div>
 
 
+</div><p></p><hr><a id="method-write_lines"></a><div class="section">
+<h3 id="method-write-lines-">Method <code>write_lines()</code><a class="anchor" aria-label="anchor" href="#method-write-lines-"></a></h3>
+
+<div class="section">
+<h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">GenericExport</span><span class="op">$</span><span class="fu">write_lines</span><span class="op">(</span><span class="va">x</span>, <span class="va">file</span>, <span class="va">...</span><span class="op">)</span></code></pre></div><p></p></div>
+</div>
+
+
 </div><p></p><hr><a id="method-create_archive"></a><div class="section">
 <h3 id="method-create-archive-">Method <code>create_archive()</code><a class="anchor" aria-label="anchor" href="#method-create-archive-"></a></h3>
 
 <div class="section">
-<h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
+<h4 id="usage-15">Usage<a class="anchor" aria-label="anchor" href="#usage-15"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">GenericExport</span><span class="op">$</span><span class="fu">create_archive</span><span class="op">(</span><span class="va">tables</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
@@ -231,7 +242,7 @@
 <h3 id="method-create-manifest-">Method <code>create_manifest()</code><a class="anchor" aria-label="anchor" href="#method-create-manifest-"></a></h3>
 
 <div class="section">
-<h4 id="usage-15">Usage<a class="anchor" aria-label="anchor" href="#usage-15"></a></h4>
+<h4 id="usage-16">Usage<a class="anchor" aria-label="anchor" href="#usage-16"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">GenericExport</span><span class="op">$</span><span class="fu">create_manifest</span><span class="op">(</span><span class="va">tables</span>, <span class="va">template</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
@@ -240,7 +251,7 @@
 <h3 id="method-create-manifest-csv-">Method <code>create_manifest_csv()</code><a class="anchor" aria-label="anchor" href="#method-create-manifest-csv-"></a></h3>
 
 <div class="section">
-<h4 id="usage-16">Usage<a class="anchor" aria-label="anchor" href="#usage-16"></a></h4>
+<h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">GenericExport</span><span class="op">$</span><span class="fu">create_manifest_csv</span><span class="op">(</span><span class="va">tables</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
@@ -249,7 +260,7 @@
 <h3 id="method-create-manifest-pdf-">Method <code>create_manifest_pdf()</code><a class="anchor" aria-label="anchor" href="#method-create-manifest-pdf-"></a></h3>
 
 <div class="section">
-<h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
+<h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">GenericExport</span><span class="op">$</span><span class="fu">create_manifest_pdf</span><span class="op">(</span><span class="va">tables</span>, <span class="va">template</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
@@ -258,8 +269,17 @@
 <h3 id="method-create-codebook-">Method <code>create_codebook()</code><a class="anchor" aria-label="anchor" href="#method-create-codebook-"></a></h3>
 
 <div class="section">
-<h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
+<h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">GenericExport</span><span class="op">$</span><span class="fu">create_codebook</span><span class="op">(</span><span class="va">tables</span>, <span class="va">template</span><span class="op">)</span></code></pre></div><p></p></div>
+</div>
+
+
+</div><p></p><hr><a id="method-create_report"></a><div class="section">
+<h3 id="method-create-report-">Method <code>create_report()</code><a class="anchor" aria-label="anchor" href="#method-create-report-"></a></h3>
+
+<div class="section">
+<h4 id="usage-20">Usage<a class="anchor" aria-label="anchor" href="#usage-20"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">GenericExport</span><span class="op">$</span><span class="fu">create_report</span><span class="op">(</span><span class="va">tables</span>, <span class="va">template</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
 
@@ -267,7 +287,7 @@
 <h3 id="method-render-markdown-">Method <code>render_markdown()</code><a class="anchor" aria-label="anchor" href="#method-render-markdown-"></a></h3>
 
 <div class="section">
-<h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
+<h4 id="usage-21">Usage<a class="anchor" aria-label="anchor" href="#usage-21"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">GenericExport</span><span class="op">$</span><span class="fu">render_markdown</span><span class="op">(</span><span class="va">input</span>, <span class="va">output_file</span>, <span class="va">...</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
@@ -275,7 +295,7 @@
 </div><p></p><hr><a id="method-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-20">Usage<a class="anchor" aria-label="anchor" href="#usage-20"></a></h4>
+<h4 id="usage-22">Usage<a class="anchor" aria-label="anchor" href="#usage-22"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">GenericExport</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
