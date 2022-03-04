@@ -111,14 +111,16 @@ ExportTable <- R6::R6Class(
 
       character_fields <- metadata %>%
         filter(type == "CHARACTER") %>%
-        dplyr::pull(variable)
+        dplyr::pull(variable) %>%
+        unique()
       character_fields_count <- length(character_fields)
 
       self$alert_warning(
         glue::glue("{character_fields_count} CHARACTER fields in metadata"),
-        character_fields_count == 0,
-        paste(character_fields, collapse = " ")
+        character_fields_count == 0
       )
+      yaml::as.yaml(character_fields) %>%
+        cli::cat_line()
 
       character_fields <- dataset %>%
         select(where(is.character)) %>%
@@ -129,6 +131,8 @@ ExportTable <- R6::R6Class(
         glue::glue("{character_fields_count} CHARACTER fields in dataset"),
         character_fields_count == 0
       )
+      yaml::as.yaml(character_fields) %>%
+        cli::cat_line()
 
       study_id_var <- "STUDY_ID"
       self$alert_danger(
@@ -140,24 +144,40 @@ ExportTable <- R6::R6Class(
         dplyr::group_by(across(study_id_var)) %>%
         tally() %>%
         filter(n > 1) %>%
+        ungroup() %>%
         nrow()
+
       self$alert_danger(
         glue::glue("{study_id_var} with {study_id_dulicates} duplicates"),
         study_id_dulicates == 0
       )
 
-      study_id <- dataset[[study_id_var]]
-      study_id_na <- sum(is.na(study_id))
-      self$alert_danger(
-        glue::glue("{study_id_var} with {study_id_na} NAs"),
-        study_id_na == 0
-      )
-
+      study_id <- floor(as.numeric(dataset[[study_id_var]]))
       study_id_range <- paste(range(study_id), collapse = " - ")
       self$alert_danger(
         glue::glue("{study_id_var} range: {study_id_range}"),
         self$check_study_id_range(study_id)
       )
+
+      check_fields <- c(study_id_var)
+
+      if (isTRUE(self$args$check_all_fields)) {
+        check_fields <- unique(c(check_fields, names(dataset)))
+      }
+
+      purrr::walk(check_fields, function(field) {
+        missing_values <- dataset %>%
+          filter(if_all(field, ~ is.na(.))) %>%
+          mutate(across(study_id_var, ~ floor(as.numeric(.)))) %>%
+          select(study_id_var) %>%
+          distinct() %>%
+          nrow()
+
+        self$alert_danger(
+          glue::glue("{field} with {missing_values} NAs"),
+          missing_values == 0
+        )
+      })
     },
 
     # write metadata to file

@@ -33,11 +33,13 @@ Generic export class that includes password-protected compression (optional)
 \item \href{#method-calulate_checksums}{\code{GenericExport$calulate_checksums()}}
 \item \href{#method-make_filename}{\code{GenericExport$make_filename()}}
 \item \href{#method-write_csv}{\code{GenericExport$write_csv()}}
+\item \href{#method-write_lines}{\code{GenericExport$write_lines()}}
 \item \href{#method-create_archive}{\code{GenericExport$create_archive()}}
 \item \href{#method-create_manifest}{\code{GenericExport$create_manifest()}}
 \item \href{#method-create_manifest_csv}{\code{GenericExport$create_manifest_csv()}}
 \item \href{#method-create_manifest_pdf}{\code{GenericExport$create_manifest_pdf()}}
 \item \href{#method-create_codebook}{\code{GenericExport$create_codebook()}}
+\item \href{#method-create_report}{\code{GenericExport$create_report()}}
 \item \href{#method-render_markdown}{\code{GenericExport$render_markdown()}}
 \item \href{#method-clone}{\code{GenericExport$clone()}}
 }
@@ -167,7 +169,7 @@ Generic export class that includes password-protected compression (optional)
 \if{latex}{\out{\hypertarget{method-make_filename}{}}}
 \subsection{Method \code{make_filename()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{GenericExport$make_filename(prefix, suffix)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{GenericExport$make_filename(name, suffix)}\if{html}{\out{</div>}}
 }
 
 }
@@ -177,6 +179,15 @@ Generic export class that includes password-protected compression (optional)
 \subsection{Method \code{write_csv()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{GenericExport$write_csv(x, file, ...)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-write_lines"></a>}}
+\if{latex}{\out{\hypertarget{method-write_lines}{}}}
+\subsection{Method \code{write_lines()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GenericExport$write_lines(x, file, ...)}\if{html}{\out{</div>}}
 }
 
 }
@@ -222,6 +233,15 @@ Generic export class that includes password-protected compression (optional)
 \subsection{Method \code{create_codebook()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{GenericExport$create_codebook(tables, template)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-create_report"></a>}}
+\if{latex}{\out{\hypertarget{method-create_report}{}}}
+\subsection{Method \code{create_report()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GenericExport$create_report(tables, template)}\if{html}{\out{</div>}}
 }
 
 }

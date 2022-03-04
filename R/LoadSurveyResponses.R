@@ -55,6 +55,9 @@ LoadSurveyResponses <- R6::R6Class(
     get_responses = function(project, .collect, ...) {
       self$logger$info("loading responses project=%s", project)
 
+      pb <- self$progress_bar(total = 1)
+      pb$message(glue::glue("{cli::symbol$bullet} redcap: {project}"))
+
       project <- private$redcap(project)
 
       # extract the name of survey instrument

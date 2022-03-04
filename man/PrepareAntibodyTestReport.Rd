@@ -38,6 +38,7 @@ Prepare antibody test report.
 \item \out{<span class="pkg-link" data-pkg="exceed.pipelines" data-topic="GenericExport" data-id="create_manifest">}\href{../../exceed.pipelines/html/GenericExport.html#method-create_manifest}{\code{exceed.pipelines::GenericExport$create_manifest()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="exceed.pipelines" data-topic="GenericExport" data-id="create_manifest_csv">}\href{../../exceed.pipelines/html/GenericExport.html#method-create_manifest_csv}{\code{exceed.pipelines::GenericExport$create_manifest_csv()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="exceed.pipelines" data-topic="GenericExport" data-id="create_manifest_pdf">}\href{../../exceed.pipelines/html/GenericExport.html#method-create_manifest_pdf}{\code{exceed.pipelines::GenericExport$create_manifest_pdf()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="exceed.pipelines" data-topic="GenericExport" data-id="create_report">}\href{../../exceed.pipelines/html/GenericExport.html#method-create_report}{\code{exceed.pipelines::GenericExport$create_report()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="exceed.pipelines" data-topic="GenericExport" data-id="create_unencrypted_archive">}\href{../../exceed.pipelines/html/GenericExport.html#method-create_unencrypted_archive}{\code{exceed.pipelines::GenericExport$create_unencrypted_archive()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="exceed.pipelines" data-topic="GenericExport" data-id="export_tables">}\href{../../exceed.pipelines/html/GenericExport.html#method-export_tables}{\code{exceed.pipelines::GenericExport$export_tables()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="exceed.pipelines" data-topic="GenericExport" data-id="generate_password">}\href{../../exceed.pipelines/html/GenericExport.html#method-generate_password}{\code{exceed.pipelines::GenericExport$generate_password()}}\out{</span>}
@@ -51,6 +52,7 @@ Prepare antibody test report.
 \item \out{<span class="pkg-link" data-pkg="exceed.pipelines" data-topic="GenericExport" data-id="show_config">}\href{../../exceed.pipelines/html/GenericExport.html#method-show_config}{\code{exceed.pipelines::GenericExport$show_config()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="exceed.pipelines" data-topic="GenericExport" data-id="show_summary">}\href{../../exceed.pipelines/html/GenericExport.html#method-show_summary}{\code{exceed.pipelines::GenericExport$show_summary()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="exceed.pipelines" data-topic="GenericExport" data-id="write_csv">}\href{../../exceed.pipelines/html/GenericExport.html#method-write_csv}{\code{exceed.pipelines::GenericExport$write_csv()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="exceed.pipelines" data-topic="GenericExport" data-id="write_lines">}\href{../../exceed.pipelines/html/GenericExport.html#method-write_lines}{\code{exceed.pipelines::GenericExport$write_lines()}}\out{</span>}
 }
 \out{</details>}
 }

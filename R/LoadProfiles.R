@@ -15,6 +15,8 @@ LoadProfiles <- R6::R6Class(
     get_profiles = function(.collect, ...) {
       self$logger$info("loading profiles")
 
+      message(glue::glue("{cli::symbol$bullet} profiles"))
+
       profiles <- self$client$profiles() %>%
         .collect(...)
 
