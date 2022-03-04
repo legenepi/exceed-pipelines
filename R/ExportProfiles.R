@@ -36,11 +36,15 @@ ExportProfiles <- R6::R6Class(
     },
 
     prepare_dataset = function(metadata) {
+      allow_duplicates <- FALSE
+      if (!is.null(self$args$allow_duplicates))
+        allow_duplicates <- self$args$allow_duplicates
+
       demographics <- self$client$pipeline() %>%
         add_step(
           LoadDemographicProfiles,
           pseudo_dob_offset = self$args$parent$args$pseudo_dob_offset,
-          allow_duplicates = self$args$allow_duplicates,
+          allow_duplicates = allow_duplicates,
           exclude_withdrawn = self$args$exclude_withdrawn,
           exclude_incomplete_surveys = self$args$exclude_incomplete_surveys,
         ) %>%
@@ -71,8 +75,9 @@ ExportProfiles <- R6::R6Class(
             as.character()
         )
 
-      if (!isTRUE(self$args$allow_duplicates)) {
-        group_by(uuid) %>%
+      if (!allow_duplicates) {
+        profiles <- profiles %>%
+          group_by(uuid) %>%
           group_map(function(.x, .y) {
             nhs_numbers <- discard(.x$nhs_no, is.na)
             if (n_distinct(nhs_numbers) == 1)
@@ -97,7 +102,7 @@ ExportProfiles <- R6::R6Class(
         distinct() %>%
         rename_with(str_to_upper)
 
-      if (isTRUE(self$args$allow_duplicates)) {
+      if (allow_duplicates) {
         profiles <- profiles %>%
           group_by(STUDY_ID) %>%
           mutate(STUDY_ID = paste(STUDY_ID, row_number(), sep = ".")) %>%
