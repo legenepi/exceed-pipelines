@@ -69,17 +69,20 @@ ExportProfiles <- R6::R6Class(
           sex = sex %>%
             fct_recode("M" = "Male", "F" = "Female") %>%
             as.character()
-        ) %>%
+        )
+
+      if (!isTRUE(self$args$allow_duplicates)) {
         group_by(uuid) %>%
-        group_map(function(.x, .y) {
-          nhs_numbers <- discard(.x$nhs_no, is.na)
-          if (n_distinct(nhs_numbers) == 1)
-            slice_head(.x, n = 1)
-          else {
-            mutate(.x, nhs_no = NA)
-          }
-        }) %>%
-        bind_rows()
+          group_map(function(.x, .y) {
+            nhs_numbers <- discard(.x$nhs_no, is.na)
+            if (n_distinct(nhs_numbers) == 1)
+              slice_head(.x, n = 1)
+            else {
+              mutate(.x, nhs_no = NA)
+            }
+          }) %>%
+          bind_rows()
+      }
 
       profiles <- profiles %>%
         select(
