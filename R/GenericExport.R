@@ -63,23 +63,25 @@ GenericExport <- R6::R6Class(
         private$.password <- self$generate_password(
           length = self$config$archive$password_length
         )
-        writeLines(private$.password, fs::path(self$output_dir, ".password"))
+        filename <- self$make_filename(
+          self$config$archive$prefix,
+          suffix = "txt"
+        )
+        self$write_lines(
+          yaml::as.yaml(
+            list(password = private$.password)
+          ),
+          filename
+        )
       }
 
       private$.archive <- self$make_filename(
-        prefix = self$config$archive$prefix,
+        self$config$archive$prefix,
         suffix = suffix
       )
 
-      private$.codebook <- self$make_filename(
-        prefix = "codebook",
-        suffix = "pdf"
-      )
-
-      private$.manifest <- self$make_filename(
-        prefix = "manifest",
-        suffix = "csv"
-      )
+      private$.codebook <- self$make_filename("codebook", suffix = "pdf")
+      private$.manifest <- self$make_filename("manifest", suffix = "csv")
     },
 
     get_config = function() {
@@ -216,7 +218,7 @@ GenericExport <- R6::R6Class(
       return(c(filename = fs::path_file(file), checksums))
     },
 
-    make_filename = function(prefix, suffix) {
+    make_filename = function(name, suffix) {
       timestamp <- self$timestamp
       snapshot <- self$client$snapshot
 
@@ -226,7 +228,7 @@ GenericExport <- R6::R6Class(
       filename <- fs::path(
         self$output_dir,
         paste(
-          paste(c("exceed", prefix, self$timestamp), collapse = "_"),
+          paste(c("exceed", name, self$timestamp), collapse = "_"),
           suffix,
           sep = "."
         )
@@ -251,6 +253,14 @@ GenericExport <- R6::R6Class(
       cli::cli_alert_success(file)
 
       return(file)
+    },
+
+    write_lines = function(x, file, ...) {
+      file %>%
+        fs::path_dir() %>%
+        fs::dir_create()
+
+      writeLines(x, file)
     },
 
     create_archive = function(tables) {
