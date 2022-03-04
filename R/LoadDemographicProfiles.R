@@ -186,7 +186,13 @@ LoadDemographicProfiles <- R6::R6Class(
 
       profiles <- dplyr::select(profiles, -dob)
 
-      if (self$args$allow_duplicates) {
+      allow_duplicates <- ifelse(
+        is.null(self$args$allow_duplicates),
+        FALSE,
+        self$args$allow_duplicates
+      )
+
+      if (allow_duplicates) {
         dob <- dplyr::filter(dob, !is.na(uuid), !is.na(dob))
 
         profiles <- profiles %>%
