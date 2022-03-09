@@ -11,18 +11,19 @@ LoadDatastoreTable <- R6::R6Class(
   "LoadDatastoreTable",
   inherit = exceedapi::Step,
 
-  private = list(
-    .source = NULL,
-    .dataset = NULL
-  ),
-
   public = list(
-    transform = function(.data, .refresh_cache = FALSE, ...) {
-      self$client$datastore(
+    get_dataset = function(source, dataset, ...) {
+      message(glue::glue("{cli::symbol$bullet} datastore: {source}/{dataset}"))
+      self$client$datastore(source = source, dataset = dataset) %>%
+        collect(.concat = isTRUE(self$args$concat), ...)
+    },
+
+    transform = function(.data, ...) {
+      self$get_dataset(
         source = self$args$source,
-        dataset = self$args$dataset
-      ) %>%
-        collect(.refresh_cache = .refresh_cache)
+        dataset = self$args$dataset,
+        ...
+      )
     }
   )
 )

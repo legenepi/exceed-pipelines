@@ -34,8 +34,8 @@ LoadPrimaryCarePatients <- R6::R6Class(
       patients %>%
         dplyr::left_join(patient_practice, by = c(id = "patient_id")) %>%
         mutate(
-          exceed_id = str_sub(
-            str_pad(exceed_id, private$exceed_id_length, pad = "0"),
+          exceed_id = stringr::str_sub(
+            stringr::str_pad(exceed_id, private$exceed_id_length, pad = "0"),
             -private$exceed_id_length,
             -1
           ),
