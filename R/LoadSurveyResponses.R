@@ -43,8 +43,14 @@ LoadSurveyResponses <- R6::R6Class(
     },
 
     transform = function(.data, .collect, ...) {
+      project <- ifelse(
+        is.null(self$args$project),
+        private$project,
+        self$args$project
+      )
+
       responses <- self$get_responses(
-        project = private$project,
+        project = project,
         .collect = .collect,
         ...
       )
