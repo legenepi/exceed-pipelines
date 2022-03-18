@@ -27,13 +27,13 @@ MergeUUIDs <- R6::R6Class(
 
       # keep distinct by uuid
       if (!is.null(self$args$distinct)) {
-        distinct_slice <- self$args$distinct_slice
-        if (is.null(distinct_slice))
+        distinct_slicer <- self$args$distinct_slicer
+        if (is.null(distinct_slicer))
           slicer <- dplyr::slice_min
 
         .data <- .data %>%
           dplyr::group_by(uuid) %>%
-          slicer(self$args$distinct, n = 1, with_ties = FALSE) %>%
+          slicer(!!rlang::sym(self$args$distinct), n = 1, with_ties = FALSE) %>%
           dplyr::ungroup()
       }
 
