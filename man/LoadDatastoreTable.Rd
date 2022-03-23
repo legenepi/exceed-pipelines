@@ -19,6 +19,7 @@ Load a table from datastore
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
+\item \href{#method-get_dataset}{\code{LoadDatastoreTable$get_dataset()}}
 \item \href{#method-transform}{\code{LoadDatastoreTable$transform()}}
 \item \href{#method-clone}{\code{LoadDatastoreTable$clone()}}
 }
@@ -36,11 +37,20 @@ Load a table from datastore
 \out{</details>}
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_dataset"></a>}}
+\if{latex}{\out{\hypertarget{method-get_dataset}{}}}
+\subsection{Method \code{get_dataset()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{LoadDatastoreTable$get_dataset(source, dataset, ...)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-transform"></a>}}
 \if{latex}{\out{\hypertarget{method-transform}{}}}
 \subsection{Method \code{transform()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LoadDatastoreTable$transform(.data, .refresh_cache = FALSE, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{LoadDatastoreTable$transform(.data, ...)}\if{html}{\out{</div>}}
 }
 
 }

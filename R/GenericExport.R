@@ -50,7 +50,7 @@ GenericExport <- R6::R6Class(
 
       private$.output_dir <- here::here(
         self$get_source_path(),
-        "output",
+        "outgoing",
         private$.timestamp
       )
 

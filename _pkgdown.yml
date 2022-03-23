@@ -36,6 +36,7 @@ reference:
       - LoadFaithful
       - LoadIris
       - LoadMotorTrendCars
+      - ZeroPadding
   - title: Geospatial
     contents:
     - LoadONSBoundaries

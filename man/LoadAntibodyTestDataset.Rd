@@ -14,24 +14,25 @@ LoadAntibodyTestDataset class
 Load antibody test dataset.
 }
 \section{Super classes}{
-\code{\link[exceedapi:SnapshotBackend]{exceedapi::SnapshotBackend}} -> \code{\link[exceedapi:API]{exceedapi::API}} -> \code{\link[exceedapi:Step]{exceedapi::Step}} -> \code{LoadAntibodyTestDataset}
+\code{\link[exceedapi:SnapshotBackend]{exceedapi::SnapshotBackend}} -> \code{\link[exceedapi:API]{exceedapi::API}} -> \code{\link[exceedapi:Step]{exceedapi::Step}} -> \code{\link[exceed.pipelines:LoadDatastoreTable]{exceed.pipelines::LoadDatastoreTable}} -> \code{LoadAntibodyTestDataset}
 }
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{LoadAntibodyTestDataset$new()}}
-\item \href{#method-transform}{\code{LoadAntibodyTestDataset$transform()}}
+\item \href{#method-get_dataset}{\code{LoadAntibodyTestDataset$get_dataset()}}
 \item \href{#method-clone}{\code{LoadAntibodyTestDataset$clone()}}
 }
 }
 \if{html}{
-\out{<details open ><summary>Inherited methods</summary>}
+\out{<details ><summary>Inherited methods</summary>}
 \itemize{
 \item \out{<span class="pkg-link" data-pkg="exceedapi" data-topic="Step" data-id="add_step">}\href{../../exceedapi/html/Step.html#method-add_step}{\code{exceedapi::Step$add_step()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="exceedapi" data-topic="Step" data-id="add_step_object">}\href{../../exceedapi/html/Step.html#method-add_step_object}{\code{exceedapi::Step$add_step_object()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="exceedapi" data-topic="Step" data-id="inverse_transform">}\href{../../exceedapi/html/Step.html#method-inverse_transform}{\code{exceedapi::Step$inverse_transform()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="exceedapi" data-topic="Step" data-id="progress_bar">}\href{../../exceedapi/html/Step.html#method-progress_bar}{\code{exceedapi::Step$progress_bar()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="exceedapi" data-topic="Step" data-id="run">}\href{../../exceedapi/html/Step.html#method-run}{\code{exceedapi::Step$run()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="exceed.pipelines" data-topic="LoadDatastoreTable" data-id="transform">}\href{../../exceed.pipelines/html/LoadDatastoreTable.html#method-transform}{\code{exceed.pipelines::LoadDatastoreTable$transform()}}\out{</span>}
 }
 \out{</details>}
 }
@@ -40,16 +41,16 @@ Load antibody test dataset.
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LoadAntibodyTestDataset$new(pipeline, dataset, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{LoadAntibodyTestDataset$new(pipeline, ...)}\if{html}{\out{</div>}}
 }
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-transform"></a>}}
-\if{latex}{\out{\hypertarget{method-transform}{}}}
-\subsection{Method \code{transform()}}{
+\if{html}{\out{<a id="method-get_dataset"></a>}}
+\if{latex}{\out{\hypertarget{method-get_dataset}{}}}
+\subsection{Method \code{get_dataset()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{LoadAntibodyTestDataset$transform(...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{LoadAntibodyTestDataset$get_dataset(source, dataset, ...)}\if{html}{\out{</div>}}
 }
 
 }
