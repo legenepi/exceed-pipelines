@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">exceed.pipelines</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.10.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,7 @@
     </div>
     <div class="section level2">
     <h2 id="super-classes">Super classes<a class="anchor" aria-label="anchor" href="#super-classes"></a></h2>
-    <p><code>exceedapi::SnapshotBackend</code> -&gt; <code>exceedapi::API</code> -&gt; <code>exceedapi::Step</code> -&gt; <code>LoadAntibodyTestDataset</code></p>
+    <p><code>exceedapi::SnapshotBackend</code> -&gt; <code>exceedapi::API</code> -&gt; <code>exceedapi::Step</code> -&gt; <code><a href="LoadDatastoreTable.html">exceed.pipelines::LoadDatastoreTable</a></code> -&gt; <code>LoadAntibodyTestDataset</code></p>
     </div>
     <div class="section level2">
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
@@ -66,28 +66,29 @@
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
 
 <ul><li><p><a href="#method-new"><code>LoadAntibodyTestDataset$new()</code></a></p></li>
-<li><p><a href="#method-transform"><code>LoadAntibodyTestDataset$transform()</code></a></p></li>
+<li><p><a href="#method-get_dataset"><code>LoadAntibodyTestDataset$get_dataset()</code></a></p></li>
 <li><p><a href="#method-clone"><code>LoadAntibodyTestDataset$clone()</code></a></p></li>
-</ul></div><p><details open><summary>Inherited methods</summary><ul><li><p><span class="pkg-link" data-pkg="exceedapi" data-topic="Step" data-id="add_step"><a href="NA#method-add_step"><code>exceedapi::Step$add_step()</code></a></span></p></li>
+</ul></div><p><details><summary>Inherited methods</summary><ul><li><p><span class="pkg-link" data-pkg="exceedapi" data-topic="Step" data-id="add_step"><a href="NA#method-add_step"><code>exceedapi::Step$add_step()</code></a></span></p></li>
 <li><p><span class="pkg-link" data-pkg="exceedapi" data-topic="Step" data-id="add_step_object"><a href="NA#method-add_step_object"><code>exceedapi::Step$add_step_object()</code></a></span></p></li>
 <li><p><span class="pkg-link" data-pkg="exceedapi" data-topic="Step" data-id="inverse_transform"><a href="NA#method-inverse_transform"><code>exceedapi::Step$inverse_transform()</code></a></span></p></li>
 <li><p><span class="pkg-link" data-pkg="exceedapi" data-topic="Step" data-id="progress_bar"><a href="NA#method-progress_bar"><code>exceedapi::Step$progress_bar()</code></a></span></p></li>
 <li><p><span class="pkg-link" data-pkg="exceedapi" data-topic="Step" data-id="run"><a href="NA#method-run"><code>exceedapi::Step$run()</code></a></span></p></li>
+<li><p><span class="pkg-link" data-pkg="exceed.pipelines" data-topic="LoadDatastoreTable" data-id="transform"><a href="LoadDatastoreTable.html#method-transform"><code>exceed.pipelines::LoadDatastoreTable$transform()</code></a></span></p></li>
 </ul></details></p><hr><a id="method-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
 
 <div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va"><a href="../reference/LoadAntibodyTestDataset.html">LoadAntibodyTestDataset</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">pipeline</span>, <span class="va">dataset</span>, <span class="va">...</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va"><a href="../reference/LoadAntibodyTestDataset.html">LoadAntibodyTestDataset</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">pipeline</span>, <span class="va">...</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
 
-</div><p></p><hr><a id="method-transform"></a><div class="section">
-<h3 id="method-transform-">Method <code><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform()</a></code><a class="anchor" aria-label="anchor" href="#method-transform-"></a></h3>
+</div><p></p><hr><a id="method-get_dataset"></a><div class="section">
+<h3 id="method-get-dataset-">Method <code>get_dataset()</code><a class="anchor" aria-label="anchor" href="#method-get-dataset-"></a></h3>
 
 <div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">LoadAntibodyTestDataset</span><span class="op">$</span><span class="fu">transform</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">LoadAntibodyTestDataset</span><span class="op">$</span><span class="fu">get_dataset</span><span class="op">(</span><span class="va">source</span>, <span class="va">dataset</span>, <span class="va">...</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
 
