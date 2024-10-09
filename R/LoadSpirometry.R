@@ -14,11 +14,11 @@ LoadSpirometry <- R6::R6Class(
   public = list(
 
     #' output the EXCEED spirometry data
-    transform = function(only_good_blow, fvl50, vtl50, ...) {
+    transform = function(.data, .collect, ...) {
 
-      only_good_blow <- ifelse(is.null(self$only_good_blow), T, self$snapshot)
-      fvl50 <- ifelse(is.null(self$fvl50), F, self$snapshot)
-      vtl50 <- ifelse(is.null(self$vtl50), F, self$snapshot)
+      only_good_blow <- ifelse(is.null(.data), T, .data)
+      # fvl50 <- ifelse(is.null(self$fvl50), F, self$fvl50)
+      # vtl50 <- ifelse(is.null(self$vtl50), F, self$vtl50)
 
       primarycare_data <- self$client$ehr(
         "primarycare",
@@ -39,7 +39,7 @@ LoadSpirometry <- R6::R6Class(
 
       tbl_testresult <- primarycare_data %>%
         tbl("TblTestresult") %>%
-        collect()
+        .collect()
 
       # tbl_user <- primarycare_data %>%
       #   tbl("TblUser") %>%
@@ -107,15 +107,15 @@ LoadSpirometry <- R6::R6Class(
         tresult=tresult[which(idx),]
       }
 
-      if(fvl50==T) {
-        idx=tresult$fvl_count>50
-        tresult=tresult[which(idx),]
-      }
-
-      if(vtl50==T) {
-        idx=tresult$vtl_count>50
-        tresult=tresult[which(idx),]
-      }
+      # if(fvl50==T) {
+      #   idx=tresult$fvl_count>50
+      #   tresult=tresult[which(idx),]
+      # }
+      #
+      # if(vtl50==T) {
+      #   idx=tresult$vtl_count>50
+      #   tresult=tresult[which(idx),]
+      # }
       arrange(tresult,pid,testid)
 
       # tresult <- arrange(tresult,pid,testid)
