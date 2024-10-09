@@ -10,9 +10,15 @@
 LoadSpirometry <- R6::R6Class(
   "LoadSpirometry",
   inherit = exceedapi::Step,
-  testResult = NULL,
 
   public = list(
+    testResult = NULL,
+    only_good_blow = T,
+    initialize = function(only_good_blow = T) {
+      self$only_good_blow <- only_good_blow
+      self$testResult <- NA
+    },
+
     transform = function(.data, .collect, ...) {
 
       primarycare_data <- self$client$ehr("primarycare",
