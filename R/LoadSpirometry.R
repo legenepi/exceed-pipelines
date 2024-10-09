@@ -11,14 +11,6 @@ LoadSpirometry <- R6::R6Class(
   "LoadSpirometry",
   inherit = exceedapi::Step,
   testResult = NULL,
-  pat = NULL,
-  exam = NULL,
-  fvl = NULL,
-  vtl = NULL,
-
-  private = list(
-    exceed_id_length = 6
-  ),
 
   public = list(
     transform = function(.data, .collect, ...) {
