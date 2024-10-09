@@ -10,6 +10,11 @@
 LoadSpirometry <- R6::R6Class(
   "LoadSpirometry",
   inherit = exceedapi::Step,
+  testResult = NULL,
+  pat = NULL,
+  exam = NULL,
+  fvl = NULL,
+  vtl = NULL,
 
   private = list(
     exceed_id_length = 6
@@ -24,10 +29,10 @@ LoadSpirometry <- R6::R6Class(
 
       tbl_testresult <- primarycare_data %>%
         tbl("TblTestresult") %>%
-        .collect()
+        collect()
 
       # Collect spirometry data
-      tresult <- tbl_testresult %>%
+      self$testResult <- tbl_testresult %>%
         mutate(pid=substring(vcendid,unlist(gregexpr('-',vcendid))[1]+1)) %>%
         mutate(pid=substring(pid,1,unlist(gregexpr('-',pid))-1)) %>%
         mutate(timeid=substring(vcendid,unlist(gregexpr('-',vcendid))[1]+1)) %>%
@@ -62,7 +67,7 @@ LoadSpirometry <- R6::R6Class(
                vtl=vcvtl,
                fvl=vcfvl)
 
-      arrange(tresult,pid,testid)
+      arrange(self$testResult,pid,testid)
     }
   )
 )
