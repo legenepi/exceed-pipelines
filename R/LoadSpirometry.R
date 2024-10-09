@@ -13,7 +13,7 @@ LoadSpirometry <- R6::R6Class(
 
   public = list(
 
-    #' transform the data by zero-padding the exceed_id
+    #' output the EXCEED spirometry data
     transform = function(only_good_blow, fvl50, vtl50, ...) {
 
       only_good_blow <- ifelse(is.null(self$only_good_blow), T, self$snapshot)
@@ -39,7 +39,7 @@ LoadSpirometry <- R6::R6Class(
 
       tbl_testresult <- primarycare_data %>%
         tbl("TblTestresult") %>%
-        .collect()
+        collect()
 
       # tbl_user <- primarycare_data %>%
       #   tbl("TblUser") %>%
