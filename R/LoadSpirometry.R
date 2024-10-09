@@ -11,59 +11,20 @@ LoadSpirometry <- R6::R6Class(
   "LoadSpirometry",
   inherit = exceedapi::Step,
 
-  public = list(
+  private = list(
+    exceed_id_length = 6
+  ),
 
-    #' output the EXCEED spirometry data
+  public = list(
     transform = function(.data, .collect, ...) {
 
-      only_good_blow <- ifelse(is.null(.data), T, .data)
-      # fvl50 <- ifelse(is.null(self$fvl50), F, self$fvl50)
-      # vtl50 <- ifelse(is.null(self$vtl50), F, self$vtl50)
-
-      primarycare_data <- self$client$ehr(
-        "primarycare",
+      primarycare_data <- self$client$ehr("primarycare",
         snapshot = "2019-09-03"
       )
-
-      # tbl_exam <- primarycare_data %>%
-      #   tbl("TblExamination") %>%
-      #   .collect()
-      #
-      # tbl_logging <- primarycare_data %>%
-      #   tbl("TblLogging") %>%
-      #   .collect()
-      #
-      # tbl_patient <- primarycare_data %>%
-      #   tbl("TblPatient") %>%
-      #   .collect()
 
       tbl_testresult <- primarycare_data %>%
         tbl("TblTestresult") %>%
         .collect()
-
-      # tbl_user <- primarycare_data %>%
-      #   tbl("TblUser") %>%
-      #   .collect()
-
-      # # Collect patient data
-      # pat <- tbl_patient %>%
-      #   mutate(pid=substring(vcpatientid,unlist(gregexpr('-',vcpatientid))[1]+1)) %>%
-      #   select(pid,
-      #          firstname=vcfirstname,
-      #          lastname=vclastname,
-      #          dob=vcdateofbirth,
-      #          sex=intsex,
-      #          height=intheight,
-      #          weight=intweight,
-      #          race=intrace) %>%
-      #   unique()
-
-      # # Collect examination data
-      # exam <- tbl_exam %>%
-      #   mutate(pid=substring(vcendid,unlist(gregexpr('-',vcendid))[1]+1)) %>%
-      #   select(pid,testid=inttest1,startid=vcstartid)
-      #
-      # exam <- arrange(exam,pid,testid)
 
       # Collect spirometry data
       tresult <- tbl_testresult %>%
@@ -101,41 +62,8 @@ LoadSpirometry <- R6::R6Class(
                vtl=vcvtl,
                fvl=vcfvl)
 
-      #apply filters
-      if(only_good_blow==T) {
-        idx=tresult$warning==7
-        tresult=tresult[which(idx),]
-      }
-
-      # if(fvl50==T) {
-      #   idx=tresult$fvl_count>50
-      #   tresult=tresult[which(idx),]
-      # }
-      #
-      # if(vtl50==T) {
-      #   idx=tresult$vtl_count>50
-      #   tresult=tresult[which(idx),]
-      # }
       arrange(tresult,pid,testid)
-
-      # tresult <- arrange(tresult,pid,testid)
-      # fvl=c()
-      # vtl=c()
-      # for (x in 1:nrow(tresult)) {
-      #   fvl[[x]] <- unlist(strsplit(tresult$fvl[x],"|", fixed=TRUE))
-      #   fvl[[x]] <- sub(" ", "", fvl[[x]])
-      #   fvl[[x]] <- sub(", ", ".", fvl[[x]])
-      #   fvl[[x]] <- sub(". ", ".", fvl[[x]])
-      #   fvl[[x]] <- as.double(fvl[[x]])
-      #   vtl[[x]] <- unlist(strsplit(tresult$vtl[x],"|", fixed=TRUE))
-      #   vtl[[x]] <- sub(" ", "", vtl[[x]])
-      #   vtl[[x]] <- sub(", ", ".", vtl[[x]])
-      #   vtl[[x]] <- sub(". ", ".", vtl[[x]])
-      #   vtl[[x]] <- as.double(vtl[[x]])
-      # }
-      # tresult %>% select(-c(fvl ,vtl))
     }
-
   )
 )
 
