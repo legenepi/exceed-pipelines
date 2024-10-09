@@ -12,12 +12,6 @@ LoadSpirometry <- R6::R6Class(
   inherit = exceedapi::Step,
 
   public = list(
-    testResult = NULL,
-    only_good_blow = T,
-    initialize = function(only_good_blow = T) {
-      self$only_good_blow <- only_good_blow
-      self$testResult <- NA
-    },
 
     transform = function(.data, .collect, ...) {
 
@@ -30,7 +24,7 @@ LoadSpirometry <- R6::R6Class(
         collect()
 
       # Collect spirometry data
-      self$testResult <- tbl_testresult %>%
+      testResult <- tbl_testresult %>%
         mutate(pid=substring(vcendid,unlist(gregexpr('-',vcendid))[1]+1)) %>%
         mutate(pid=substring(pid,1,unlist(gregexpr('-',pid))-1)) %>%
         mutate(timeid=substring(vcendid,unlist(gregexpr('-',vcendid))[1]+1)) %>%
@@ -65,7 +59,9 @@ LoadSpirometry <- R6::R6Class(
                vtl=vcvtl,
                fvl=vcfvl)
 
-      arrange(self$testResult,pid,testid)
+      testResult <- arrange(testResult,pid,testid)
+
+      return(primarycare_data, testResult)
     }
   )
 )
