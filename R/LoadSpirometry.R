@@ -18,13 +18,10 @@ LoadSpirometry <- R6::R6Class(
       primarycare_data <- self$client$ehr("primarycare",
         snapshot = "2019-09-03"
       )
-
-      tbl_testresult <- primarycare_data %>%
-        tbl("TblTestresult") %>%
-        collect()
-
+      
       # Collect spirometry data
-      testResult <- tbl_testresult %>%
+      testResult <- primarycare_data %>%
+        tbl("TblTestresult") %>%
         mutate(pid=substring(vcendid,unlist(gregexpr('-',vcendid))[1]+1)) %>%
         mutate(pid=substring(pid,1,unlist(gregexpr('-',pid))-1)) %>%
         mutate(timeid=substring(vcendid,unlist(gregexpr('-',vcendid))[1]+1)) %>%
@@ -55,13 +52,12 @@ LoadSpirometry <- R6::R6Class(
                fvl_xscale=intfvlxscale,
                fvl_yscale=intfvlyscale,
                vtl_xscale=intvtlxscale,
-               vtl_yscale=intvtlyscale,
-               vtl=vcvtl,
-               fvl=vcfvl)
+               vtl_yscale=intvtlyscale) %>%
+        collect()
 
       testResult <- arrange(testResult,pid,testid)
 
-      return(primarycare_data, testResult)
+      return(testResult)
     }
   )
 )
