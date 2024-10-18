@@ -37,6 +37,10 @@ LoadSpirometryVTL <- R6::R6Class(
       vtl <- strsplit(vtl,"|", fixed=TRUE)
       vtl <- purrr::map(vtl, type.convert, as.is = TRUE)
       
+      library(stringi)
+      vtl <- as.data.frame(as.matrix(vtl))
+      colnames(vtl)<-'vtl'
+      
       return(vtl)
     }
   )

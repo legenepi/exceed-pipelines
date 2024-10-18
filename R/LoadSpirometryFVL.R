@@ -36,6 +36,10 @@ LoadSpirometryFVL <- R6::R6Class(
       fvl <- gsub(",", ".", fvl)
       fvl <- strsplit(fvl,"|", fixed=TRUE)
       fvl <- purrr::map(fvl, type.convert, as.is = TRUE)
+      
+      library(stringi)
+      fvl <- as.data.frame(as.matrix(fvl))
+      colnames(fvl)<-'fvl'
 
       return(fvl)
     }
